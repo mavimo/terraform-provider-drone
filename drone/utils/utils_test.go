@@ -15,7 +15,7 @@ func TestParseRepo(t *testing.T) {
 		{"Test invalid repository with too many slashes", "foo/bar/baz", "", "", true},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			user, repo, err := utils.ParseRepo(test.str)
+			user, repo, err := ParseRepo(test.str)
 
 			if (test.is_error == true) && (err == nil) {
 				t.Errorf("expected error")

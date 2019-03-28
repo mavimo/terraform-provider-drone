@@ -45,7 +45,7 @@ func testUserDestroy(state *terraform.State) error {
 			continue
 		}
 
-		err := client.UserDel(resource.Primary.Attributes["login"])
+		err := client.UserDelete(resource.Primary.Attributes["login"])
 
 		if err == nil {
 			return fmt.Errorf("User still exists: %s", resource.Primary.Attributes["login"])

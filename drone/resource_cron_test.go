@@ -10,53 +10,47 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func testSecretConfigBasic(user, repo, name, value string) string {
+func testCronConfigBasic(user, repo, name string) string {
 	return fmt.Sprintf(`
     resource "drone_repo" "repo" {
       repository = "%s/%s"
     }
     
-    resource "drone_secret" "secret" {
+    resource "drone_cron" "cron" {
       repository = "${drone_repo.repo.repository}"
       name       = "%s"
-      value      = "%s"
+			expr       = "@monthly"
+			event      = "push"
     }
     `,
 		user,
 		repo,
 		name,
-		value,
 	)
 }
 
-func TestSecret(t *testing.T) {
+func TestCron(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testProviders,
-		CheckDestroy: testSecretDestroy,
+		CheckDestroy: testCronDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testSecretConfigBasic(
+				Config: testCronConfigBasic(
 					testDroneUser,
 					"repository-1",
-					"password",
-					"1234567890",
+					"cron_job",
 				),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
+						"drone_cron.cron",
 						"repository",
 						fmt.Sprintf("%s/repository-1", testDroneUser),
 					),
 					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
+						"drone_cron.cron",
 						"name",
-						"password",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"value",
-						"1234567890",
+						"cron_job",
 					),
 				),
 			},
@@ -64,7 +58,7 @@ func TestSecret(t *testing.T) {
 	})
 }
 
-func testSecretDestroy(state *terraform.State) error {
+func testCronDestroy(state *terraform.State) error {
 	client := testProvider.Meta().(drone.Client)
 
 	for _, resource := range state.RootModule().Resources {
@@ -78,7 +72,7 @@ func testSecretDestroy(state *terraform.State) error {
 			return err
 		}
 
-		err = client.SecretDelete(owner, repo, resource.Primary.Attributes["name"])
+		err = client.CronDelete(owner, repo, resource.Primary.Attributes["name"])
 
 		if err == nil {
 			return fmt.Errorf(

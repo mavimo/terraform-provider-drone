@@ -27,6 +27,10 @@ func resourceUser() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"token": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 
 		Importer: &schema.ResourceImporter{
@@ -91,10 +95,13 @@ func resourceUserExists(data *schema.ResourceData, meta interface{}) (bool, erro
 
 func createUser(data *schema.ResourceData) (user *drone.User) {
 	user = &drone.User{
-		Login: data.Get("login").(string),
+		Login:   data.Get("login").(string),
+		Active:  data.Get("active").(bool),
+		Admin:   data.Get("admin").(bool),
+		Machine: data.Get("machine").(bool),
 	}
 
-	return
+	return user
 }
 
 func updateUser(data *schema.ResourceData) (user *drone.UserPatch) {
@@ -117,5 +124,6 @@ func readUser(data *schema.ResourceData, user *drone.User, err error) error {
 	data.Set("active", user.Active)
 	data.Set("machine", user.Machine)
 	data.Set("admin", user.Admin)
+	data.Set("token", user.Token)
 	return nil
 }
