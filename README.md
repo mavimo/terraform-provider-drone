@@ -22,14 +22,19 @@ provider "drone" {
 resource "drone_repo" "hello_world" {
   repository = "octocat/hello-world"
   visability = "public"
-  hooks      = ["push", "pull_request", "tag", "deployment"]
 }
 
 resource "drone_secret" "master_password" {
   repository = "${resource.hello_world.repository}"
   name       = "master_password"
   value      = "correct horse battery staple"
-  events     = ["push", "pull_request", "tag", "deployment"]
+}
+
+resource "drone_cron" "cron_job" {
+  repository = "${resource.hello_world.repository}"
+  name = "cron_job_1"
+  expr = "@monthly"
+  branch = "test"
 }
 ```
 
@@ -53,28 +58,6 @@ provider "drone" {
 
 ## Resources
 
-### `drone_registry`
-
-Manage a repository registry.
-
-#### Example Usage
-
-```terraform
-resource "drone_registry" "docker_io" {
-  repository = "octocat/hello-world"
-  address    = "docker.io"
-  username   = "octocat"
-  password   = "correct horse battery staple"
-}
-```
-
-#### Argument Reference
-
-* `repository` - (Required) Repository name (e.g. `octocat/hello-world`).
-* `address` - (Required) Registry address.
-* `username` - (Required) Registry username.
-* `password` - (Required) Registry password.
-
 ### `drone_repo`
 
 Activate and configure a repository.
@@ -84,8 +67,7 @@ Activate and configure a repository.
 ```terraform
 resource "drone_repo" "hello_world" {
   repository = "octocat/hello-world"
-  visability = "public"
-  hooks      = ["push", "pull_request", "tag", "deployment"]
+  visibility = "public"
 }
 ```
 
@@ -93,11 +75,9 @@ resource "drone_repo" "hello_world" {
 
 * `repository` - (Required) Repository name (e.g. `octocat/hello-world`).
 * `trusted` - (Optional) Repository is trusted (default: `false`).
-* `gated` - (Optional) Repository is gated (default: `false`).
-* `timeout` - (Optional) Repository timeout (default: `0`).
+* `protected` - (Optional) Repository is protected (default: `false`).
+* `timeout` - (Optional) Repository timeout (default: `60`).
 * `visibility` - (Optional) Repository visibility (default: `private`).
-* `hooks` - (Optional) List of hooks this repository should setup is limited to, 
-  values must be `push`, `pull_request`, `tag`, and/or `deployment`.
 
 ### `drone_secret`
 
@@ -110,7 +90,6 @@ resource "drone_secret" "master_password" {
   repository = "octocat/hello-world"
   name       = "master_password"
   value      = "correct horse battery staple"
-  events     = ["push", "pull_request", "tag", "deployment"]
 }
 ````
 
@@ -119,9 +98,6 @@ resource "drone_secret" "master_password" {
 * `repository` - (Required) Repository name (e.g. `octocat/hello-world`).
 * `name` - (Required) Secret name.
 * `value` - (Required) Secret value.
-* `images` - (Optional) List of images this secret is limited to.
-* `events` - (Optional) List of events this repository should setup is limited to, 
-  values must be `push`, `pull_request`, `tag`, and/or `deployment` (default: `["push", "tag", "deployment"]`).
 
 ### `drone_user`
 
