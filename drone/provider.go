@@ -28,6 +28,7 @@ func Provider() *schema.Provider {
 			"drone_repo":   resourceRepo(),
 			"drone_secret": resourceSecret(),
 			"drone_user":   resourceUser(),
+			"drone_cron":   resourceCron(),
 		},
 		ConfigureFunc: providerConfigureFunc,
 	}

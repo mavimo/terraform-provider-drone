@@ -9,7 +9,7 @@ func ParseRepo(str string) (user, repo string, err error) {
 	parts := strings.Split(str, "/")
 
 	if len(parts) != 2 {
-		err = fmt.Errorf("Error: Invalid repository (e.g. octocat/hello-world).")
+		err = fmt.Errorf("Error: Invalid repository (e.g. octocat/hello-world). REPO: %s", str)
 		return
 	}
 

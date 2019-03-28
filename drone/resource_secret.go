@@ -35,7 +35,7 @@ func resourceSecret() *schema.Resource {
 			"allow_on_pull_request": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default:  false,
+				ForceNew: true,
 			},
 		},
 
@@ -127,10 +127,9 @@ func resourceSecretExists(data *schema.ResourceData, meta interface{}) (bool, er
 
 func createSecret(data *schema.ResourceData) (secret *drone.Secret) {
 	secret = &drone.Secret{
-		Name:            data.Get("name").(string),
-		Data:            data.Get("value").(string),
-		PullRequest:     data.Get("allow_on_pull_request").(bool),
-		PullRequestPush: true,
+		Name:        data.Get("name").(string),
+		Data:        data.Get("value").(string),
+		PullRequest: data.Get("allow_on_pull_request").(bool),
 	}
 
 	return

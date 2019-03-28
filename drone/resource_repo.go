@@ -33,11 +33,17 @@ func resourceRepo() *schema.Resource {
 			"timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  60,
 			},
 			"visibility": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "private",
+			},
+			"configuration": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  ".drone.yml",
 			},
 		},
 
@@ -144,8 +150,10 @@ func createRepo(data *schema.ResourceData) (repository *drone.RepoPatch) {
 	protected := data.Get("protected").(bool)
 	timeout := int64(data.Get("timeout").(int))
 	visibility := data.Get("visibility").(string)
+	config := data.Get("configuration").(string)
 
 	repository = &drone.RepoPatch{
+		Config:     &config,
 		Protected:  &protected,
 		Trusted:    &trusted,
 		Timeout:    &timeout,
@@ -167,6 +175,7 @@ func readRepo(data *schema.ResourceData, repository *drone.Repo, err error) erro
 	data.Set("protected", repository.Protected)
 	data.Set("timeout", repository.Timeout)
 	data.Set("visibility", repository.Visibility)
+	data.Set("configuration", repository.Config)
 
 	return nil
 }
