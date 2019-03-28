@@ -1,6 +1,7 @@
 package drone
 
 import (
+	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -98,9 +99,9 @@ func createUser(data *schema.ResourceData) (user *drone.User) {
 
 func updateUser(data *schema.ResourceData) (user *drone.UserPatch) {
 	userPatch := &drone.UserPatch{
-		Active:  Bool(data.Get("active").(bool)),
-		Admin:   Bool(data.Get("admin").(bool)),
-		Machine: Bool(data.Get("machine").(bool)),
+		Active:  utils.Bool(data.Get("active").(bool)),
+		Admin:   utils.Bool(data.Get("admin").(bool)),
+		Machine: utils.Bool(data.Get("machine").(bool)),
 	}
 	return userPatch
 }

@@ -1,11 +1,11 @@
-package drone
+package utils
 
 import (
 	"fmt"
 	"strings"
 )
 
-func parseRepo(str string) (user, repo string, err error) {
+func ParseRepo(str string) (user, repo string, err error) {
 	parts := strings.Split(str, "/")
 
 	if len(parts) != 2 {
@@ -18,7 +18,7 @@ func parseRepo(str string) (user, repo string, err error) {
 	return
 }
 
-func parseId(str, example string) (user, repo, id string, err error) {
+func ParseId(str, example string) (user, repo, id string, err error) {
 	parts := strings.Split(str, "/")
 
 	if len(parts) < 3 {

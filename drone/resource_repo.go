@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
@@ -55,7 +56,7 @@ func resourceRepo() *schema.Resource {
 func resourceRepoCreate(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, err := parseRepo(data.Get("repository").(string))
+	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
 		return err
@@ -85,7 +86,7 @@ func resourceRepoCreate(data *schema.ResourceData, meta interface{}) error {
 func resourceRepoRead(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, err := parseRepo(data.Id())
+	owner, repo, err := utils.ParseRepo(data.Id())
 
 	if err != nil {
 		return err
@@ -99,7 +100,7 @@ func resourceRepoRead(data *schema.ResourceData, meta interface{}) error {
 func resourceRepoUpdate(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, err := parseRepo(data.Get("repository").(string))
+	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
 		return err
@@ -113,7 +114,7 @@ func resourceRepoUpdate(data *schema.ResourceData, meta interface{}) error {
 func resourceRepoDelete(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, err := parseRepo(data.Id())
+	owner, repo, err := utils.ParseRepo(data.Id())
 
 	if err != nil {
 		return err
@@ -125,7 +126,7 @@ func resourceRepoDelete(data *schema.ResourceData, meta interface{}) error {
 func resourceRepoExists(data *schema.ResourceData, meta interface{}) (bool, error) {
 	client := meta.(drone.Client)
 
-	owner, repo, err := parseRepo(data.Id())
+	owner, repo, err := utils.ParseRepo(data.Id())
 
 	if err != nil {
 		return false, err

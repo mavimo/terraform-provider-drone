@@ -95,7 +95,7 @@ func testRepoDestroy(state *terraform.State) error {
 			continue
 		}
 
-		owner, repo, err := parseRepo(resource.Primary.Attributes["repository"])
+		owner, repo, err := utils.ParseRepo(resource.Primary.Attributes["repository"])
 
 		if err != nil {
 			return err

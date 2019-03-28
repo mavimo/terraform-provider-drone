@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
@@ -53,7 +54,7 @@ func resourceSecret() *schema.Resource {
 func resourceSecretCreate(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, err := parseRepo(data.Get("repository").(string))
+	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
 		return err
@@ -69,7 +70,7 @@ func resourceSecretCreate(data *schema.ResourceData, meta interface{}) error {
 func resourceSecretRead(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, name, err := parseId(data.Id(), "secret_password")
+	owner, repo, name, err := utils.ParseId(data.Id(), "secret_password")
 
 	if err != nil {
 		return err
@@ -83,7 +84,7 @@ func resourceSecretRead(data *schema.ResourceData, meta interface{}) error {
 func resourceSecretUpdate(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, err := parseRepo(data.Get("repository").(string))
+	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
 		return err
@@ -99,7 +100,7 @@ func resourceSecretUpdate(data *schema.ResourceData, meta interface{}) error {
 func resourceSecretDelete(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	owner, repo, name, err := parseId(data.Id(), "secret_password")
+	owner, repo, name, err := utils.ParseId(data.Id(), "secret_password")
 
 	if err != nil {
 		return err
@@ -111,7 +112,7 @@ func resourceSecretDelete(data *schema.ResourceData, meta interface{}) error {
 func resourceSecretExists(data *schema.ResourceData, meta interface{}) (bool, error) {
 	client := meta.(drone.Client)
 
-	owner, repo, name, err := parseId(data.Id(), "secret_password")
+	owner, repo, name, err := utils.ParseId(data.Id(), "secret_password")
 
 	if err != nil {
 		return false, err
