@@ -2,6 +2,7 @@ package drone
 
 import (
 	"fmt"
+
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/schema"
 	"golang.org/x/oauth2"

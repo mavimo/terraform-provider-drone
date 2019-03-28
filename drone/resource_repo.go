@@ -2,18 +2,12 @@ package drone
 
 import (
 	"fmt"
+	"regexp"
+
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
-	"regexp"
 )
-
-var validRepoHooks = []string{
-	drone.EventPull,
-	drone.EventPush,
-	drone.EventTag,
-	drone.EventDeploy,
-}
 
 func resourceRepo() *schema.Resource {
 	return &schema.Resource{
@@ -31,7 +25,7 @@ func resourceRepo() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"gated": {
+			"protected": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
@@ -43,15 +37,6 @@ func resourceRepo() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "private",
-			},
-			"hooks": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				// ValidateFunc: validation.ValidateListUniqueStrings,
-				Elem: &schema.Schema{
-					Type:         schema.TypeString,
-					ValidateFunc: validation.StringInSlice(validRepoHooks, true),
-				},
 			},
 		},
 
@@ -76,16 +61,22 @@ func resourceRepoCreate(data *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	_, err = client.RepoPost(owner, repo)
+	resp, err := client.Repo(owner, repo)
 
 	if err != nil {
 		return err
 	}
-
-	repository, err := client.RepoPatch(owner, repo, createRepo(data))
+	repository, err := client.RepoUpdate(owner, repo, createRepo(data))
 
 	if err != nil {
 		return err
+	}
+	if !resp.Active {
+		_, err = client.RepoEnable(owner, repo)
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return readRepo(data, repository, err)
@@ -114,7 +105,7 @@ func resourceRepoUpdate(data *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	repository, err := client.RepoPatch(owner, repo, createRepo(data))
+	repository, err := client.RepoUpdate(owner, repo, createRepo(data))
 
 	return readRepo(data, repository, err)
 }
@@ -128,7 +119,7 @@ func resourceRepoDelete(data *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	return client.RepoDel(owner, repo)
+	return client.RepoDisable(owner, repo)
 }
 
 func resourceRepoExists(data *schema.ResourceData, meta interface{}) (bool, error) {
@@ -148,26 +139,16 @@ func resourceRepoExists(data *schema.ResourceData, meta interface{}) (bool, erro
 }
 
 func createRepo(data *schema.ResourceData) (repository *drone.RepoPatch) {
-	hooks := data.Get("hooks").(*schema.Set)
-
 	trusted := data.Get("trusted").(bool)
-	gated := data.Get("gated").(bool)
+	protected := data.Get("protected").(bool)
 	timeout := int64(data.Get("timeout").(int))
 	visibility := data.Get("visibility").(string)
-	pull := hooks.Contains(drone.EventPull)
-	push := hooks.Contains(drone.EventPush)
-	deploy := hooks.Contains(drone.EventDeploy)
-	tag := hooks.Contains(drone.EventTag)
 
 	repository = &drone.RepoPatch{
-		IsTrusted:   &trusted,
-		IsGated:     &gated,
-		Timeout:     &timeout,
-		Visibility:  &visibility,
-		AllowPull:   &pull,
-		AllowPush:   &push,
-		AllowDeploy: &deploy,
-		AllowTag:    &tag,
+		Protected:  &protected,
+		Trusted:    &trusted,
+		Timeout:    &timeout,
+		Visibility: &visibility,
 	}
 
 	return
@@ -178,32 +159,13 @@ func readRepo(data *schema.ResourceData, repository *drone.Repo, err error) erro
 		return err
 	}
 
-	data.SetId(fmt.Sprintf("%s/%s", repository.Owner, repository.Name))
+	data.SetId(fmt.Sprintf("%s/%s", repository.Namespace, repository.Name))
 
-	hooks := make([]string, 0)
-
-	if repository.AllowPull == true {
-		hooks = append(hooks, drone.EventPull)
-	}
-
-	if repository.AllowPush == true {
-		hooks = append(hooks, drone.EventPush)
-	}
-
-	if repository.AllowDeploy == true {
-		hooks = append(hooks, drone.EventDeploy)
-	}
-
-	if repository.AllowTag == true {
-		hooks = append(hooks, drone.EventTag)
-	}
-
-	data.Set("repository", fmt.Sprintf("%s/%s", repository.Owner, repository.Name))
-	data.Set("trusted", repository.IsTrusted)
-	data.Set("gated", repository.IsGated)
+	data.Set("repository", fmt.Sprintf("%s/%s", repository.Namespace, repository.Name))
+	data.Set("trusted", repository.Trusted)
+	data.Set("protected", repository.Protected)
 	data.Set("timeout", repository.Timeout)
 	data.Set("visibility", repository.Visibility)
-	data.Set("hooks", hooks)
 
 	return nil
 }

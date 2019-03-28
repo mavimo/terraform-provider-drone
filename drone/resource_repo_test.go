@@ -2,17 +2,17 @@ package drone
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"testing"
 )
 
 func testRepoConfigBasic(user, repo string) string {
 	return fmt.Sprintf(`
     resource "drone_repo" "repo" {
       repository = "%s/%s"
-      hooks      = ["push", "pull_request", "tag", "deployment"]
     }
     `, user, repo)
 }
@@ -104,8 +104,8 @@ func testRepoDestroy(state *terraform.State) error {
 		repositories, err := client.RepoList()
 
 		for _, repository := range repositories {
-			if (repository.Owner == owner) && (repository.Name == repo) {
-				client.RepoDel(owner, repo)
+			if (repository.Namespace == owner) && (repository.Name == repo) {
+				client.RepoDisable(owner, repo)
 				return fmt.Errorf("Repo still exists: %s/%s", owner, repo)
 			}
 		}

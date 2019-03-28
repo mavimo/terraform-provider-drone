@@ -1,6 +1,6 @@
 workspace:
   base: /go
-  path: src/github.com/artisanofcode/terraform-provider-drone
+  path: src/github.com/Lucretius/terraform-provider-drone
 
 pipeline:
   test:
