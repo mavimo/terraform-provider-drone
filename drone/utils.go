@@ -38,5 +38,5 @@ func parseId(str, example string) (user, repo, id string, err error) {
 }
 
 func Bool(val bool) *bool {
-	return &bool
+	return &val
 }

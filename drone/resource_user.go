@@ -53,7 +53,13 @@ func resourceUserUpdate(data *schema.ResourceData, meta interface{}) error {
 
 	user, err := client.User(data.Id())
 
-	client.UserUpdate(user.Login, updateUser(data))
+	if err != nil {
+		return err
+	}
+
+	user, err = client.UserUpdate(user.Login, updateUser(data))
+
+	return readUser(data, user, err)
 }
 
 func resourceUserRead(data *schema.ResourceData, meta interface{}) error {

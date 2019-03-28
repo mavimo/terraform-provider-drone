@@ -133,7 +133,7 @@ func resourceRepoExists(data *schema.ResourceData, meta interface{}) (bool, erro
 
 	repository, err := client.Repo(owner, repo)
 
-	exists := (repository.Owner == owner) && (repository.Name == repo) && (err == nil)
+	exists := (repository.Namespace == owner) && (repository.Name == repo) && (err == nil)
 
 	return exists, err
 }
