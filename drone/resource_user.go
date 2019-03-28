@@ -5,12 +5,6 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-var defaultUserEvents = []string{
-	drone.EventPush,
-	drone.EventTag,
-	drone.EventDeploy,
-}
-
 func resourceUser() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -18,6 +12,19 @@ func resourceUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
+			},
+			"active": {
+				Type:     schema.TypeBool,
+				Required: true,
+			},
+			"admin": {
+				Type:     schema.TypeBool,
+				Required: true,
+			},
+			"machine": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
 			},
 		},
 
@@ -27,6 +34,7 @@ func resourceUser() *schema.Resource {
 
 		Create: resourceUserCreate,
 		Read:   resourceUserRead,
+		Update: resourceUserUpdate,
 		Delete: resourceUserDelete,
 		Exists: resourceUserExists,
 	}
@@ -35,9 +43,17 @@ func resourceUser() *schema.Resource {
 func resourceUserCreate(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	user, err := client.UserPost(createUser(data))
+	user, err := client.UserCreate(createUser(data))
 
 	return readUser(data, user, err)
+}
+
+func resourceUserUpdate(data *schema.ResourceData, meta interface{}) error {
+	client := meta.(drone.Client)
+
+	user, err := client.User(data.Id())
+
+	client.UserUpdate(user.Login, updateUser(data))
 }
 
 func resourceUserRead(data *schema.ResourceData, meta interface{}) error {
@@ -51,7 +67,7 @@ func resourceUserRead(data *schema.ResourceData, meta interface{}) error {
 func resourceUserDelete(data *schema.ResourceData, meta interface{}) error {
 	client := meta.(drone.Client)
 
-	return client.UserDel(data.Id())
+	return client.UserDelete(data.Id())
 }
 
 func resourceUserExists(data *schema.ResourceData, meta interface{}) (bool, error) {
@@ -74,6 +90,15 @@ func createUser(data *schema.ResourceData) (user *drone.User) {
 	return
 }
 
+func updateUser(data *schema.ResourceData) (user *drone.UserPatch) {
+	userPatch := &drone.UserPatch{
+		Active:  Bool(data.Get("active").(bool)),
+		Admin:   Bool(data.Get("admin").(bool)),
+		Machine: Bool(data.Get("machine").(bool)),
+	}
+	return userPatch
+}
+
 func readUser(data *schema.ResourceData, user *drone.User, err error) error {
 	if err != nil {
 		return err
@@ -82,6 +107,8 @@ func readUser(data *schema.ResourceData, user *drone.User, err error) error {
 	data.SetId(user.Login)
 
 	data.Set("login", user.Login)
-
+	data.Set("active", user.Active)
+	data.Set("machine", user.Machine)
+	data.Set("admin", user.Admin)
 	return nil
 }

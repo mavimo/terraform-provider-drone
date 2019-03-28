@@ -2,15 +2,18 @@ package drone
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"testing"
 )
 
 var testUserConfig = `
 resource "drone_user" "octocat" {
-  login = "octocat"
+	login = "octocat"
+	admin = false
+	active = true
 }
 `
 

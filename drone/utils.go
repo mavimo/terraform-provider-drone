@@ -36,3 +36,7 @@ func parseId(str, example string) (user, repo, id string, err error) {
 
 	return
 }
+
+func Bool(val bool) *bool {
+	return &bool
+}
