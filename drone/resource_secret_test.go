@@ -2,10 +2,11 @@ package drone
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"testing"
 )
 
 func testSecretConfigBasic(user, repo, name, value string) string {
@@ -18,7 +19,6 @@ func testSecretConfigBasic(user, repo, name, value string) string {
       repository = "${drone_repo.repo.repository}"
       name       = "%s"
       value      = "%s"
-      events     = ["push", "pull_request", "tag", "deployment"]
     }
     `,
 		user,
@@ -56,36 +56,6 @@ func TestSecret(t *testing.T) {
 						"drone_secret.secret",
 						"value",
 						"1234567890",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"images.#",
-						"0",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"events.#",
-						"4",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"events.1329302135",
-						"deployment",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"events.1396138718",
-						"pull_request",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"events.398155140",
-						"tag",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"events.696883710",
-						"push",
 					),
 				),
 			},

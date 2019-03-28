@@ -2,24 +2,11 @@ package drone
 
 import (
 	"fmt"
+	"regexp"
+
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
-	"regexp"
-)
-
-var (
-	defaultSecretEvents = []string{
-		drone.EventPush,
-		drone.EventTag,
-		drone.EventDeploy,
-	}
-	validSecretEvents = []string{
-		drone.EventPull,
-		drone.EventPush,
-		drone.EventTag,
-		drone.EventDeploy,
-	}
 )
 
 func resourceSecret() *schema.Resource {
@@ -44,22 +31,10 @@ func resourceSecret() *schema.Resource {
 				Required:  true,
 				Sensitive: true,
 			},
-			"images": {
-				Type:     schema.TypeSet,
+			"allow_on_pull_request": {
+				Type:     schema.TypeBool,
 				Optional: true,
-				// ValidateFunc: validation.ValidateListUniqueStrings,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"events": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				// ValidateFunc: validation.ValidateListUniqueStrings,
-				Elem: &schema.Schema{
-					Type:         schema.TypeString,
-					ValidateFunc: validation.StringInSlice(validSecretEvents, true),
-				},
+				Default:  false,
 			},
 		},
 
@@ -150,27 +125,11 @@ func resourceSecretExists(data *schema.ResourceData, meta interface{}) (bool, er
 }
 
 func createSecret(data *schema.ResourceData) (secret *drone.Secret) {
-	events := []string{}
-	eventSet := data.Get("events").(*schema.Set)
-	for _, v := range eventSet.List() {
-		events = append(events, v.(string))
-	}
-
-	images := []string{}
-	imageSet := data.Get("images").(*schema.Set)
-	for _, v := range imageSet.List() {
-		images = append(images, v.(string))
-	}
-
 	secret = &drone.Secret{
-		Name:   data.Get("name").(string),
-		Value:  data.Get("value").(string),
-		Images: images,
-		Events: events,
-	}
-
-	if len(secret.Events) == 0 {
-		secret.Events = defaultSecretEvents
+		Name:            data.Get("name").(string),
+		Data:            data.Get("value").(string),
+		PullRequest:     data.Get("allow_on_pull_request").(bool),
+		PullRequestPush: true,
 	}
 
 	return
@@ -185,8 +144,7 @@ func readSecret(data *schema.ResourceData, owner, repo string, secret *drone.Sec
 
 	data.Set("repository", fmt.Sprintf("%s/%s", owner, repo))
 	data.Set("name", secret.Name)
-	data.Set("images", secret.Images)
-	data.Set("events", secret.Events)
+	data.Set("allow_on_pull_request", secret.PullRequest)
 
 	return nil
 }
