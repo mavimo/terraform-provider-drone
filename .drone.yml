@@ -19,7 +19,6 @@ steps:
       event: 
         - pull_request
         - push
-      branch: master
 
   build:
     image: golang:1.10
