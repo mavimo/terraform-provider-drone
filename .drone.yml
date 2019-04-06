@@ -1,8 +1,7 @@
-workspace:
-  base: /go
-  path: src/github.com/Lucretius/terraform-provider-drone
+kind: pipeline
+name: default
 
-pipeline:
+steps:
   - name: test
     image: golang:1.10
     environment:
