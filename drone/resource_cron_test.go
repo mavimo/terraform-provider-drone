@@ -62,7 +62,7 @@ func testCronDestroy(state *terraform.State) error {
 	client := testProvider.Meta().(drone.Client)
 
 	for _, resource := range state.RootModule().Resources {
-		if resource.Type != "drone_secret" {
+		if resource.Type != "drone_cron" {
 			continue
 		}
 
@@ -76,7 +76,7 @@ func testCronDestroy(state *terraform.State) error {
 
 		if err == nil {
 			return fmt.Errorf(
-				"Secret still exists: %s/%s:%s",
+				"Cron job still exists: %s/%s:%s",
 				owner,
 				repo,
 				resource.Primary.Attributes["name"],

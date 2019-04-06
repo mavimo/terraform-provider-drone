@@ -1,5 +1,6 @@
-# Drone Terraform Provider
+[![Build Status](http://35.188.161.73/api/badges/Lucretius/terraform-provider-drone/status.svg)](http://35.188.161.73/Lucretius/terraform-provider-drone)
 
+# Drone Terraform Provider
 
 This is a fork of [this Drone provider](https://github.com/artisanofcode/terraform-provider-drone/releases/latest) which does not appear to be maintained anymore.
 A [Terraform](https://www.terraform.io) provider for configuring the 

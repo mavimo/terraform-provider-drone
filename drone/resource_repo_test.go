@@ -39,42 +39,12 @@ func TestRepo(t *testing.T) {
 					),
 					resource.TestCheckResourceAttr(
 						"drone_repo.repo",
-						"hooks.#",
-						"4",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_repo.repo",
-						"hooks.1329302135",
-						"deployment",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_repo.repo",
-						"hooks.1396138718",
-						"pull_request",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_repo.repo",
-						"hooks.398155140",
-						"tag",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_repo.repo",
-						"hooks.696883710",
-						"push",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_repo.repo",
 						"timeout",
-						"0",
+						"60",
 					),
 					resource.TestCheckResourceAttr(
 						"drone_repo.repo",
-						"timeout",
-						"0",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_repo.repo",
-						"gated",
+						"protected",
 						"false",
 					),
 					resource.TestCheckResourceAttr(
@@ -106,8 +76,10 @@ func testRepoDestroy(state *terraform.State) error {
 
 		for _, repository := range repositories {
 			if (repository.Namespace == owner) && (repository.Name == repo) {
-				client.RepoDisable(owner, repo)
-				return fmt.Errorf("Repo still exists: %s/%s", owner, repo)
+				err = client.RepoDisable(owner, repo)
+				if err != nil {
+					return fmt.Errorf("Repo still exists: %s/%s", owner, repo)
+				}
 			}
 		}
 	}
