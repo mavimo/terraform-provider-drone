@@ -1,4 +1,4 @@
-[![Build Status](http://35.188.161.73/api/badges/Lucretius/terraform-provider-drone/status.svg)](http://35.188.161.73/Lucretius/terraform-provider-drone)
+[![Build Status](http://34.212.160.193/api/badges/Lucretius/terraform-provider-drone/status.svg)](http://34.212.160.193/Lucretius/terraform-provider-drone)
 
 # Drone Terraform Provider
 
