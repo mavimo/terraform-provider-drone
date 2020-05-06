@@ -1,3 +1,9 @@
+## 0.2.0 (August 26, 2019)
+
+IMPROVEMENTS:
+
+* Updated to work with Terraform 0.12
+
 ## 0.1.0 (April 06, 2019)
 
 IMPROVEMENTS:
