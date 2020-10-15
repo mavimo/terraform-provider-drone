@@ -1,5 +1,4 @@
-[![Build Status](http://34.212.160.193/api/badges/Lucretius/terraform-provider-drone/status.svg)](http://34.212.160.193/Lucretius/terraform-provider-drone)
-
+[![registry Actions Status](https://github.com/Lucretius/terraform-provider-drone/workflows/registry/badge.svg)](https://github.com/Lucretius/terraform-provider-drone/actions)
 # Drone Terraform Provider
 
 This is a fork of [this Drone provider](https://github.com/artisanofcode/terraform-provider-drone/releases/latest) which does not appear to be maintained anymore.
