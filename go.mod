@@ -1,6 +1,6 @@
 module github.com/Lucretius/terraform-provider-drone
 
-go 1.12
+go 1.17
 
 require (
 	github.com/jackspirou/syscerts v0.0.0-20160531025014-b68f5469dff1

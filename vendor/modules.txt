@@ -60,6 +60,7 @@ github.com/blang/semver
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/drone/drone-go v1.3.0
+## explicit
 github.com/drone/drone-go/drone
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
@@ -131,6 +132,7 @@ github.com/hashicorp/hil/scanner
 # github.com/hashicorp/logutils v1.0.0
 github.com/hashicorp/logutils
 # github.com/hashicorp/terraform v0.12.7
+## explicit
 github.com/hashicorp/terraform/addrs
 github.com/hashicorp/terraform/command/format
 github.com/hashicorp/terraform/config
@@ -181,6 +183,9 @@ github.com/hashicorp/terraform/version
 github.com/hashicorp/terraform-config-inspect/tfconfig
 # github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb
 github.com/hashicorp/yamux
+# github.com/jackspirou/syscerts v0.0.0-20160531025014-b68f5469dff1
+## explicit
+github.com/jackspirou/syscerts
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
 # github.com/mattn/go-colorable v0.1.1
@@ -271,6 +276,7 @@ golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
 golang.org/x/net/trace
 # golang.org/x/oauth2 v0.0.0-20190319182350-c85d3e98c914
+## explicit
 golang.org/x/oauth2
 golang.org/x/oauth2/google
 golang.org/x/oauth2/internal
@@ -284,6 +290,7 @@ golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
 # google.golang.org/api v0.3.1
+## explicit
 google.golang.org/api/gensupport
 google.golang.org/api/googleapi
 google.golang.org/api/googleapi/internal/uritemplates
