@@ -1,13 +1,13 @@
-[![registry Actions Status](https://github.com/Lucretius/terraform-provider-drone/workflows/registry/badge.svg)](https://github.com/Lucretius/terraform-provider-drone/actions)
+[![registry Actions Status](https://github.com/KazanExpress/terraform-provider-drone/workflows/registry/badge.svg)](https://github.com/KazanExpress/terraform-provider-drone/actions)
 # Drone Terraform Provider
 
-This is a fork of [this Drone provider](https://github.com/artisanofcode/terraform-provider-drone/releases/latest) which does not appear to be maintained anymore.
-A [Terraform](https://www.terraform.io) provider for configuring the 
+This is a fork of [this Drone provider](https://github.com/Lucretius/terraform-provider-drone/releases/latest) which does not appear to be maintained anymore.
+A [Terraform](https://www.terraform.io) provider for configuring the
 [Drone](https://drone.io) continuous delivery platform.
 
 ## Installing
 
-You can download the plugin from the [Releases](https://github.com/Lucretius/terraform-provider-drone/releases/latest) page,
+You can download the plugin from the [Releases](https://github.com/KazanExpress/terraform-provider-drone/releases/latest) page,
 for help installing please refer to the [Official Documentation](https://www.terraform.io/docs/plugins/basics.html#installing-a-plugin).
 
 
@@ -158,7 +158,7 @@ Note: In order to use the `drone_user` resource you must have admin privileges w
 To install from source:
 
 ```shell
-git clone git://github.com/Lucretius/terraform-provider-drone.git
+git clone git://github.com/KazanExpress/terraform-provider-drone.git
 cd terraform-provider-drone
 go get
 go build
