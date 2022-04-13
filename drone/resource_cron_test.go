@@ -6,8 +6,8 @@ import (
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func testCronConfigBasic(user, repo, name string) string {
@@ -15,7 +15,7 @@ func testCronConfigBasic(user, repo, name string) string {
     resource "drone_repo" "repo" {
       repository = "%s/%s"
     }
-    
+
     resource "drone_cron" "cron" {
       repository = "${drone_repo.repo.repository}"
       name       = "%s"
@@ -38,14 +38,14 @@ func TestCron(t *testing.T) {
 			{
 				Config: testCronConfigBasic(
 					testDroneUser,
-					"repository-1",
+					"hook-test",
 					"cron_job",
 				),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"drone_cron.cron",
 						"repository",
-						fmt.Sprintf("%s/repository-1", testDroneUser),
+						fmt.Sprintf("%s/hook-test", testDroneUser),
 					),
 					resource.TestCheckResourceAttr(
 						"drone_cron.cron",

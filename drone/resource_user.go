@@ -2,9 +2,10 @@ package drone
 
 import (
 	"fmt"
+
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceUser() *schema.Resource {
@@ -135,6 +136,8 @@ func readUser(data *schema.ResourceData, user *drone.User, err error) error {
 	data.Set("active", user.Active)
 	data.Set("machine", user.Machine)
 	data.Set("admin", user.Admin)
-	data.Set("token", user.Token)
+	if user.Token != "" {
+		data.Set("token", user.Token)
+	}
 	return nil
 }

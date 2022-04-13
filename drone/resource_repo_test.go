@@ -6,8 +6,8 @@ import (
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func testRepoConfigBasic(user, repo string) string {
@@ -25,12 +25,12 @@ func TestRepo(t *testing.T) {
 		CheckDestroy: testRepoDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testRepoConfigBasic(testDroneUser, "repository-1"),
+				Config: testRepoConfigBasic(testDroneUser, "hook-test"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"drone_repo.repo",
 						"repository",
-						fmt.Sprintf("%s/repository-1", testDroneUser),
+						fmt.Sprintf("%s/hook-test", testDroneUser),
 					),
 					resource.TestCheckResourceAttr(
 						"drone_repo.repo",

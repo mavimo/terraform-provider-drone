@@ -2,9 +2,10 @@ package drone
 
 import (
 	"fmt"
+
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceOrgSecret() *schema.Resource {

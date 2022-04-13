@@ -43,7 +43,7 @@ func ParseOrgId(str, example string) (organization, id string, err error) {
 		err = fmt.Errorf(
 			"Error: Invalid Organization Identity (e.g. octocat/%s)",
 			example,
-			)
+		)
 		return
 	}
 
@@ -54,5 +54,9 @@ func ParseOrgId(str, example string) (organization, id string, err error) {
 }
 
 func Bool(val bool) *bool {
+	return &val
+}
+
+func String(val string) *string {
 	return &val
 }

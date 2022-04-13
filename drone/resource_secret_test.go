@@ -6,8 +6,8 @@ import (
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func testSecretConfigBasic(user, repo, name, value string) string {
@@ -15,7 +15,7 @@ func testSecretConfigBasic(user, repo, name, value string) string {
     resource "drone_repo" "repo" {
       repository = "%s/%s"
     }
-    
+
     resource "drone_secret" "secret" {
       repository = "${drone_repo.repo.repository}"
       name       = "%s"
@@ -38,7 +38,7 @@ func TestSecret(t *testing.T) {
 			{
 				Config: testSecretConfigBasic(
 					testDroneUser,
-					"repository-1",
+					"hook-test",
 					"password",
 					"1234567890",
 				),
@@ -46,7 +46,7 @@ func TestSecret(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"drone_secret.secret",
 						"repository",
-						fmt.Sprintf("%s/repository-1", testDroneUser),
+						fmt.Sprintf("%s/hook-test", testDroneUser),
 					),
 					resource.TestCheckResourceAttr(
 						"drone_secret.secret",

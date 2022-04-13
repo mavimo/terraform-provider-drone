@@ -4,19 +4,18 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var (
 	testDroneUser string = os.Getenv("DRONE_USER")
-	testProviders map[string]terraform.ResourceProvider
+	testProviders map[string]*schema.Provider
 	testProvider  *schema.Provider
 )
 
 func init() {
 	testProvider = Provider()
-	testProviders = map[string]terraform.ResourceProvider{
+	testProviders = map[string]*schema.Provider{
 		"drone": testProvider,
 	}
 }
@@ -28,7 +27,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _ terraform.ResourceProvider = Provider()
+	var _ *schema.Provider = Provider()
 }
 
 func testAccPreCheck(t *testing.T) {

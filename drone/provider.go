@@ -6,8 +6,7 @@ import (
 	"net/http"
 
 	"github.com/drone/drone-go/drone"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/jackspirou/syscerts"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/oauth2"
 )
 
@@ -41,9 +40,9 @@ func Provider() *schema.Provider {
 func providerConfigureFunc(data *schema.ResourceData) (interface{}, error) {
 	config := new(oauth2.Config)
 
-	certs := syscerts.SystemRootsPool()
+	// certs := syscerts.SystemRootsPool()
 	tlsConfig := &tls.Config{
-		RootCAs:            certs,
+		// RootCAs:            certs,
 		InsecureSkipVerify: false,
 	}
 
