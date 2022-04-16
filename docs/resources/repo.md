@@ -15,15 +15,15 @@ Activate and configure a repository.
 
 ### Required
 
-- `repository` (String)
+- `repository` (String) Repository name
 
 ### Optional
 
-- `configuration` (String)
+- `configuration` (String) Drone Configuration file
 - `id` (String) The ID of this resource.
-- `protected` (Boolean)
-- `timeout` (Number)
-- `trusted` (Boolean)
-- `visibility` (String)
+- `protected` (Boolean) Repository is protected
+- `timeout` (Number) Build execution timeout in minutes
+- `trusted` (Boolean) Repository is trusted
+- `visibility` (String) Repository visibility
 
 

@@ -25,5 +25,5 @@ provider "drone" {
 
 ### Required
 
-- `server` (String) URL for the drone server
-- `token` (String) API Token for the drone server
+- `server` (String) The Drone servers url, It must be provided, but can also be sourced from the `DRONE_SERVER` environment variable.
+- `token` (String) The Drone servers api token, It must be provided, but can also be sourced from the `DRONE_TOKEN` environment variable.

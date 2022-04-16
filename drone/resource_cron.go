@@ -14,40 +14,46 @@ func resourceCron() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"repository": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Repository name",
 				ValidateFunc: validation.StringMatch(
 					regexp.MustCompile("^[^/ ]+/[^/ ]+$"),
 					"Invalid repository (e.g. octocat/hello-world)",
 				),
 			},
 			"disabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Indicate if the cron should be disabled.",
 			},
 			"event": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The event for this cron job. Only allowed value is `push`.",
 				ValidateFunc: validation.StringInSlice([]string{
 					drone.EventPush,
 				}, false),
 			},
 			"branch": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "master",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The branch to run this cron job on.",
+				Default:     "master",
 			},
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Description: "Cron job name",
+				Required:    true,
+				ForceNew:    true,
 			},
 			"expr": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "@monthly",
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The cron interval. Allowed values are `@daily`, `@weekly`, `@monthly`, and `@yearly`.",
+				Default:     "@monthly",
+				ForceNew:    true,
 				ValidateFunc: validation.StringInSlice([]string{
 					"@hourly",
 					"@daily",
