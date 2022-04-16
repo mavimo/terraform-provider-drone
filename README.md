@@ -25,13 +25,13 @@ resource "drone_repo" "hello_world" {
 }
 
 resource "drone_secret" "master_password" {
-  repository = "${resource.hello_world.repository}"
+  repository = resource.hello_world.repository
   name       = "master_password"
   value      = "correct horse battery staple"
 }
 
 resource "drone_cron" "cron_job" {
-  repository = "${resource.hello_world.repository}"
+  repository = resource.hello_world.repository
   name = "cron_job_1"
   expr = "@monthly"
   branch = "test"
