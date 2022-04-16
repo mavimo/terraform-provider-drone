@@ -15,13 +15,13 @@ Manage a repository secret.
 
 ### Required
 
-- `name` (String)
-- `repository` (String)
-- `value` (String, Sensitive)
+- `name` (String) Secret name
+- `repository` (String) Repository name
+- `value` (String, Sensitive) Secret value
 
 ### Optional
 
-- `allow_on_pull_request` (Boolean)
+- `allow_on_pull_request` (Boolean) Allow retrieving the secret on pull requests
 - `id` (String) The ID of this resource.
 
 

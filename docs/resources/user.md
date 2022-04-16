@@ -17,17 +17,17 @@ Manage a user.
 
 ### Required
 
-- `active` (Boolean)
-- `admin` (Boolean)
-- `login` (String)
+- `active` (Boolean) Is the user active?
+- `admin` (Boolean) Is the user an admin?
+- `login` (String) Login name
 
 ### Optional
 
 - `id` (String) The ID of this resource.
-- `machine` (Boolean)
+- `machine` (Boolean) Is the user a machine?
 
 ### Read-Only
 
-- `token` (String)
+- `token` (String) The user's access token
 
 

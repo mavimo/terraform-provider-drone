@@ -16,36 +16,42 @@ func resourceRepo() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"repository": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Repository name",
 				ValidateFunc: validation.StringMatch(
 					regexp.MustCompile("^[^/ ]+/[^/ ]+$"),
 					"Invalid repository (e.g. octocat/hello-world)",
 				),
 			},
 			"trusted": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Repository is trusted",
 			},
 			"protected": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Repository is protected",
 			},
 			"timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  60,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Default:     60,
+				Description: "Build execution timeout in minutes",
 			},
 			"visibility": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "private",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "private",
+				Description: "Repository visibility",
 			},
 			"configuration": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  ".drone.yml",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     ".drone.yml",
+				Description: "Drone Configuration file",
 			},
 		},
 

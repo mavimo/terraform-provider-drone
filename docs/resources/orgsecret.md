@@ -15,14 +15,14 @@ Manage an org secret.
 
 ### Required
 
-- `name` (String)
-- `namespace` (String)
-- `value` (String, Sensitive)
+- `name` (String) Secret name
+- `namespace` (String) Organization name
+- `value` (String, Sensitive) Secret value
 
 ### Optional
 
-- `allow_on_pull_request` (Boolean)
-- `allow_push_on_pull_request` (Boolean)
+- `allow_on_pull_request` (Boolean) Allow retrieving the secret on pull requests.
+- `allow_push_on_pull_request` (Boolean) Allow pushing on pull requests
 - `id` (String) The ID of this resource.
 
 

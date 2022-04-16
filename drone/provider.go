@@ -17,13 +17,13 @@ func Provider() *schema.Provider {
 			"server": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "URL for the drone server",
+				Description: "The Drone servers url, It must be provided, but can also be sourced from the `DRONE_SERVER` environment variable.",
 				DefaultFunc: schema.EnvDefaultFunc("DRONE_SERVER", nil),
 			},
 			"token": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "API Token for the drone server",
+				Description: "The Drone servers api token, It must be provided, but can also be sourced from the `DRONE_TOKEN` environment variable.",
 				DefaultFunc: schema.EnvDefaultFunc("DRONE_TOKEN", nil),
 			},
 		},

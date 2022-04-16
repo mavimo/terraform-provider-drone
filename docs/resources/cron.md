@@ -15,15 +15,15 @@ Manage a repository cron job.
 
 ### Required
 
-- `event` (String)
-- `name` (String)
-- `repository` (String)
+- `event` (String) The event for this cron job. Only allowed value is `push`.
+- `name` (String) Cron job name
+- `repository` (String) Repository name
 
 ### Optional
 
-- `branch` (String)
-- `disabled` (Boolean)
-- `expr` (String)
+- `branch` (String) The branch to run this cron job on.
+- `disabled` (Boolean) Indicate if the cron should be disabled.
+- `expr` (String) The cron interval. Allowed values are `@daily`, `@weekly`, `@monthly`, and `@yearly`.
 - `id` (String) The ID of this resource.
 
 
