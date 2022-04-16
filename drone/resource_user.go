@@ -1,10 +1,12 @@
 package drone
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -36,36 +38,36 @@ func resourceUser() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Create: resourceUserCreate,
-		Read:   resourceUserRead,
-		Update: resourceUserUpdate,
-		Delete: resourceUserDelete,
-		Exists: resourceUserExists,
+		CreateContext: resourceUserCreate,
+		ReadContext:   resourceUserRead,
+		UpdateContext: resourceUserUpdate,
+		DeleteContext: resourceUserDelete,
+		Exists:        resourceUserExists,
 	}
 }
 
-func resourceUserCreate(data *schema.ResourceData, meta interface{}) error {
+func resourceUserCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	user, err := client.UserCreate(createUser(data))
 
 	if err != nil {
-		return fmt.Errorf("Unable to create user %s", user.Login)
+		return diag.Errorf("Unable to create user %s", user.Login)
 	}
 
 	return readUser(data, user, err)
 }
 
-func resourceUserUpdate(data *schema.ResourceData, meta interface{}) error {
+func resourceUserUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	user, err := client.User(data.Id())
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	user, err = client.UserUpdate(user.Login, updateUser(data))
@@ -73,21 +75,27 @@ func resourceUserUpdate(data *schema.ResourceData, meta interface{}) error {
 	return readUser(data, user, err)
 }
 
-func resourceUserRead(data *schema.ResourceData, meta interface{}) error {
+func resourceUserRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	user, err := client.User(data.Id())
 	if err != nil {
-		return fmt.Errorf("failed to read Drone user with id: %s", data.Id())
+		return diag.Errorf("failed to read Drone user with id: %s", data.Id())
 	}
 
 	return readUser(data, user, err)
 }
 
-func resourceUserDelete(data *schema.ResourceData, meta interface{}) error {
+func resourceUserDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
-	return client.UserDelete(data.Id())
+	err := client.UserDelete(data.Id())
+
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return diag.Diagnostics{}
 }
 
 func resourceUserExists(data *schema.ResourceData, meta interface{}) (bool, error) {
@@ -125,9 +133,9 @@ func updateUser(data *schema.ResourceData) (user *drone.UserPatch) {
 	return userPatch
 }
 
-func readUser(data *schema.ResourceData, user *drone.User, err error) error {
+func readUser(data *schema.ResourceData, user *drone.User, err error) diag.Diagnostics {
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	data.SetId(user.Login)
@@ -139,5 +147,6 @@ func readUser(data *schema.ResourceData, user *drone.User, err error) error {
 	if user.Token != "" {
 		data.Set("token", user.Token)
 	}
-	return nil
+
+	return diag.Diagnostics{}
 }

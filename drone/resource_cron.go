@@ -1,11 +1,13 @@
 package drone
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -59,59 +61,59 @@ func resourceCron() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Create: resourceCronCreate,
-		Read:   resourceCronRead,
-		Update: resourceCronUpdate,
-		Delete: resourceCronDelete,
-		Exists: resourceCronExists,
+		CreateContext: resourceCronCreate,
+		ReadContext:   resourceCronRead,
+		UpdateContext: resourceCronUpdate,
+		DeleteContext: resourceCronDelete,
+		Exists:        resourceCronExists,
 	}
 }
 
-func resourceCronCreate(data *schema.ResourceData, meta interface{}) error {
+func resourceCronCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	cron, err := client.CronCreate(owner, repo, createCron(data))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return readCron(data, cron, owner, repo, err)
 }
 
-func resourceCronRead(data *schema.ResourceData, meta interface{}) error {
+func resourceCronRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	cronName := data.Get("name").(string)
 	cron, err := client.Cron(owner, repo, cronName)
 	if err != nil {
-		return fmt.Errorf("failed to read Drone Cron: %s/%s/%s", owner, repo, cronName)
+		return diag.Errorf("failed to read Drone Cron: %s/%s/%s", owner, repo, cronName)
 	}
 
 	return readCron(data, cron, owner, repo, err)
 }
 
-func resourceCronUpdate(data *schema.ResourceData, meta interface{}) error {
+func resourceCronUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	cronName := data.Get("name").(string)
 	cron, err := client.CronUpdate(owner, repo, cronName, updateCron(data))
@@ -119,16 +121,22 @@ func resourceCronUpdate(data *schema.ResourceData, meta interface{}) error {
 	return readCron(data, cron, owner, repo, err)
 }
 
-func resourceCronDelete(data *schema.ResourceData, meta interface{}) error {
+func resourceCronDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	cronName := data.Get("name").(string)
-	return client.CronDelete(owner, repo, cronName)
+	err = client.CronDelete(owner, repo, cronName)
+
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return diag.Diagnostics{}
 }
 
 func resourceCronExists(data *schema.ResourceData, meta interface{}) (bool, error) {
@@ -180,9 +188,9 @@ func updateCron(data *schema.ResourceData) (repository *drone.CronPatch) {
 	return cron
 }
 
-func readCron(data *schema.ResourceData, cron *drone.Cron, namespace string, repo string, err error) error {
+func readCron(data *schema.ResourceData, cron *drone.Cron, namespace string, repo string, err error) diag.Diagnostics {
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	data.SetId(fmt.Sprintf("%d", cron.ID))
@@ -193,5 +201,5 @@ func readCron(data *schema.ResourceData, cron *drone.Cron, namespace string, rep
 	data.Set("expr", cron.Expr)
 	data.Set("name", cron.Name)
 
-	return nil
+	return diag.Diagnostics{}
 }

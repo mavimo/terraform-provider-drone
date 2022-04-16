@@ -1,11 +1,13 @@
 package drone
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -40,76 +42,82 @@ func resourceSecret() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Create: resourceSecretCreate,
-		Read:   resourceSecretRead,
-		Update: resourceSecretUpdate,
-		Delete: resourceSecretDelete,
-		Exists: resourceSecretExists,
+		CreateContext: resourceSecretCreate,
+		ReadContext:   resourceSecretRead,
+		UpdateContext: resourceSecretUpdate,
+		DeleteContext: resourceSecretDelete,
+		Exists:        resourceSecretExists,
 	}
 }
 
-func resourceSecretCreate(data *schema.ResourceData, meta interface{}) error {
+func resourceSecretCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	secret, err := client.SecretCreate(owner, repo, createSecret(data))
 
 	data.Set("value", data.Get("value").(string))
 
-	return readSecret(data, owner, repo, secret, err)
+	return readSecret(ctx, data, owner, repo, secret, err)
 }
 
-func resourceSecretRead(data *schema.ResourceData, meta interface{}) error {
+func resourceSecretRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, name, err := utils.ParseId(data.Id(), "secret_password")
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	secret, err := client.Secret(owner, repo, name)
 	if err != nil {
-		return fmt.Errorf("failed to read Drone Secret: %s/%s/%s", owner, repo, name)
+		return diag.Errorf("failed to read Drone Secret: %s/%s/%s", owner, repo, name)
 	}
 
-	return readSecret(data, owner, repo, secret, err)
+	return readSecret(ctx, data, owner, repo, secret, err)
 }
 
-func resourceSecretUpdate(data *schema.ResourceData, meta interface{}) error {
+func resourceSecretUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	secret, err := client.SecretUpdate(owner, repo, createSecret(data))
 
 	data.Set("value", data.Get("value").(string))
 
-	return readSecret(data, owner, repo, secret, err)
+	return readSecret(ctx, data, owner, repo, secret, err)
 }
 
-func resourceSecretDelete(data *schema.ResourceData, meta interface{}) error {
+func resourceSecretDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, name, err := utils.ParseId(data.Id(), "secret_password")
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	return client.SecretDelete(owner, repo, name)
+	err = client.SecretDelete(owner, repo, name)
+
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return diag.Diagnostics{}
 }
 
 func resourceSecretExists(data *schema.ResourceData, meta interface{}) (bool, error) {
@@ -141,9 +149,9 @@ func createSecret(data *schema.ResourceData) (secret *drone.Secret) {
 	return
 }
 
-func readSecret(data *schema.ResourceData, owner, repo string, secret *drone.Secret, err error) error {
+func readSecret(ctx context.Context, data *schema.ResourceData, owner, repo string, secret *drone.Secret, err error) diag.Diagnostics {
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	data.SetId(fmt.Sprintf("%s/%s/%s", owner, repo, secret.Name))
@@ -152,5 +160,5 @@ func readSecret(data *schema.ResourceData, owner, repo string, secret *drone.Sec
 	data.Set("name", secret.Name)
 	data.Set("allow_on_pull_request", secret.PullRequest)
 
-	return nil
+	return diag.Diagnostics{}
 }

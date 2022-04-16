@@ -1,11 +1,13 @@
 package drone
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -48,93 +50,99 @@ func resourceRepo() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Create: resourceRepoCreate,
-		Read:   resourceRepoRead,
-		Update: resourceRepoUpdate,
-		Delete: resourceRepoDelete,
-		Exists: resourceRepoExists,
+		CreateContext: resourceRepoCreate,
+		ReadContext:   resourceRepoRead,
+		UpdateContext: resourceRepoUpdate,
+		DeleteContext: resourceRepoDelete,
+		Exists:        resourceRepoExists,
 	}
 }
 
-func resourceRepoCreate(data *schema.ResourceData, meta interface{}) error {
+func resourceRepoCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	// Refresh repository list
 	if _, err := client.RepoListSync(); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	resp, err := client.Repo(owner, repo)
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
-	repository, err := client.RepoUpdate(owner, repo, createRepo(data))
+	repository, err := client.RepoUpdate(owner, repo, createRepo(ctx, data))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if !resp.Active {
 		_, err = client.RepoEnable(owner, repo)
 
 		if err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
-	return readRepo(data, repository, err)
+	return readRepo(ctx, data, repository, err)
 }
 
-func resourceRepoRead(data *schema.ResourceData, meta interface{}) error {
+func resourceRepoRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Id())
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	repository, err := client.Repo(owner, repo)
 	if err != nil {
-		return fmt.Errorf("failed to read Drone Repo: %s/%s", owner, repo)
+		return diag.Errorf("failed to read Drone Repo: %s/%s", owner, repo)
 	}
 
-	return readRepo(data, repository, err)
+	return readRepo(ctx, data, repository, err)
 }
 
-func resourceRepoUpdate(data *schema.ResourceData, meta interface{}) error {
+func resourceRepoUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Get("repository").(string))
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	repository, err := client.RepoUpdate(owner, repo, createRepo(data))
+	repository, err := client.RepoUpdate(owner, repo, createRepo(ctx, data))
 
-	return readRepo(data, repository, err)
+	return readRepo(ctx, data, repository, err)
 }
 
-func resourceRepoDelete(data *schema.ResourceData, meta interface{}) error {
+func resourceRepoDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	owner, repo, err := utils.ParseRepo(data.Id())
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	return client.RepoDisable(owner, repo)
+	err = client.RepoDisable(owner, repo)
+
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return diag.Diagnostics{}
 }
 
 func resourceRepoExists(data *schema.ResourceData, meta interface{}) (bool, error) {
@@ -156,7 +164,7 @@ func resourceRepoExists(data *schema.ResourceData, meta interface{}) (bool, erro
 	return exists, err
 }
 
-func createRepo(data *schema.ResourceData) (repository *drone.RepoPatch) {
+func createRepo(ctx context.Context, data *schema.ResourceData) (repository *drone.RepoPatch) {
 	trusted := data.Get("trusted").(bool)
 	protected := data.Get("protected").(bool)
 	timeout := int64(data.Get("timeout").(int))
@@ -171,12 +179,12 @@ func createRepo(data *schema.ResourceData) (repository *drone.RepoPatch) {
 		Visibility: &visibility,
 	}
 
-	return
+	return repository
 }
 
-func readRepo(data *schema.ResourceData, repository *drone.Repo, err error) error {
+func readRepo(ctx context.Context, data *schema.ResourceData, repository *drone.Repo, err error) diag.Diagnostics {
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	data.SetId(fmt.Sprintf("%s/%s", repository.Namespace, repository.Name))
@@ -188,5 +196,5 @@ func readRepo(data *schema.ResourceData, repository *drone.Repo, err error) erro
 	data.Set("visibility", repository.Visibility)
 	data.Set("configuration", repository.Config)
 
-	return nil
+	return diag.Diagnostics{}
 }

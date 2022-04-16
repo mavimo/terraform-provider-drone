@@ -1,11 +1,12 @@
 package drone
 
 import (
+	"context"
 	"crypto/tls"
-	"fmt"
 	"net/http"
 
 	"github.com/drone/drone-go/drone"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/oauth2"
 )
@@ -33,11 +34,11 @@ func Provider() *schema.Provider {
 			"drone_user":      resourceUser(),
 			"drone_cron":      resourceCron(),
 		},
-		ConfigureFunc: providerConfigureFunc,
+		ConfigureContextFunc: providerConfigureFunc,
 	}
 }
 
-func providerConfigureFunc(data *schema.ResourceData) (interface{}, error) {
+func providerConfigureFunc(ctx context.Context, data *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	config := new(oauth2.Config)
 
 	// certs := syscerts.SystemRootsPool()
@@ -60,8 +61,8 @@ func providerConfigureFunc(data *schema.ResourceData) (interface{}, error) {
 	client := drone.NewClient(data.Get("server").(string), auther)
 
 	if _, err := client.Self(); err != nil {
-		return nil, fmt.Errorf("drone client failed: %s", err)
+		return nil, diag.Errorf("drone client failed: %s", err)
 	}
 
-	return client, nil
+	return client, diag.Diagnostics{}
 }

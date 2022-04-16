@@ -1,10 +1,12 @@
 package drone
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -40,74 +42,81 @@ func resourceOrgSecret() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Create: resourceOrgSecretCreate,
-		Read:   resourceOrgSecretRead,
-		Update: resourceOrgSecretUpdate,
-		Delete: resourceOrgSecretDelete,
-		Exists: resourceOrgSecretExists,
+		CreateContext: resourceOrgSecretCreate,
+		ReadContext:   resourceOrgSecretRead,
+		UpdateContext: resourceOrgSecretUpdate,
+		DeleteContext: resourceOrgSecretDelete,
+		Exists:        resourceOrgSecretExists,
 	}
 }
 
-func resourceOrgSecretCreate(data *schema.ResourceData, meta interface{}) error {
+func resourceOrgSecretCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	namespace := data.Get("namespace").(string)
 	secret, err := client.OrgSecretCreate(namespace, createOrgSecret(data))
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	readOrgSecret(data, namespace, secret)
-	return nil
+
+	return diag.Diagnostics{}
 }
 
-func resourceOrgSecretRead(data *schema.ResourceData, meta interface{}) error {
+func resourceOrgSecretRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	namespace, name, err := utils.ParseOrgId(data.Id(), "secret_password")
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	secret, err := client.OrgSecret(namespace, name)
 	if err != nil {
-		return fmt.Errorf("failed to read Drone Org Secret: %s/%s", namespace, name)
+		return diag.Errorf("failed to read Drone Org Secret: %s/%s", namespace, name)
 	}
 
 	readOrgSecret(data, namespace, secret)
 	return nil
 }
 
-func resourceOrgSecretUpdate(data *schema.ResourceData, meta interface{}) error {
+func resourceOrgSecretUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	namespace, _, err := utils.ParseOrgId(data.Id(), "secret_password")
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	secret, err := client.OrgSecretUpdate(namespace, createOrgSecret(data))
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	data.Set("value", data.Get("value").(string))
 	readOrgSecret(data, namespace, secret)
-	return nil
+
+	return diag.Diagnostics{}
 }
 
-func resourceOrgSecretDelete(data *schema.ResourceData, meta interface{}) error {
+func resourceOrgSecretDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(drone.Client)
 
 	namespace, name, err := utils.ParseOrgId(data.Id(), "secret_password")
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	return client.OrgSecretDelete(namespace, name)
+	err = client.OrgSecretDelete(namespace, name)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return diag.Diagnostics{}
 }
 
 func resourceOrgSecretExists(data *schema.ResourceData, meta interface{}) (bool, error) {
