@@ -7,14 +7,12 @@ import (
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/mavimo/terraform-provider-drone/drone/utils"
+	"github.com/mavimo/terraform-provider-drone/internal/provider/utils"
 )
 
 func resourceUser() *schema.Resource {
 	return &schema.Resource{
-		Description: `Manage a user.
-
-		~> In order to use the _drone_user_ resource you must have admin privileges within your Drone environment.`,
+		Description: "Manage a user.",
 		Schema: map[string]*schema.Schema{
 			"login": {
 				Type:        schema.TypeString,
