@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/mavimo/terraform-provider-drone/drone/utils"
 )
 
 func resourceUser() *schema.Resource {
