@@ -7,7 +7,7 @@ import (
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/mavimo/terraform-provider-drone/drone/utils"
+	"github.com/mavimo/terraform-provider-drone/internal/provider/utils"
 )
 
 func resourceUser() *schema.Resource {

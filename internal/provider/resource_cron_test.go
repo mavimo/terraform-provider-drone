@@ -7,56 +7,50 @@ import (
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	"github.com/mavimo/terraform-provider-drone/drone/utils"
+	"github.com/mavimo/terraform-provider-drone/internal/provider/utils"
 )
 
-func testSecretConfigBasic(user, repo, name, value string) string {
+func testCronConfigBasic(user, repo, name string) string {
 	return fmt.Sprintf(`
     resource "drone_repo" "repo" {
       repository = "%s/%s"
     }
 
-    resource "drone_secret" "secret" {
+    resource "drone_cron" "cron" {
       repository = "${drone_repo.repo.repository}"
       name       = "%s"
-      value      = "%s"
+			expr       = "@monthly"
+			event      = "push"
     }
     `,
 		user,
 		repo,
 		name,
-		value,
 	)
 }
 
-func TestSecret(t *testing.T) {
+func TestCron(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testProviders,
-		CheckDestroy: testSecretDestroy,
+		CheckDestroy: testCronDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testSecretConfigBasic(
+				Config: testCronConfigBasic(
 					testDroneUser,
 					"hook-test",
-					"password",
-					"1234567890",
+					"cron_job",
 				),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
+						"drone_cron.cron",
 						"repository",
 						fmt.Sprintf("%s/hook-test", testDroneUser),
 					),
 					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
+						"drone_cron.cron",
 						"name",
-						"password",
-					),
-					resource.TestCheckResourceAttr(
-						"drone_secret.secret",
-						"value",
-						"1234567890",
+						"cron_job",
 					),
 				),
 			},
@@ -64,11 +58,11 @@ func TestSecret(t *testing.T) {
 	})
 }
 
-func testSecretDestroy(state *terraform.State) error {
+func testCronDestroy(state *terraform.State) error {
 	client := testProvider.Meta().(drone.Client)
 
 	for _, resource := range state.RootModule().Resources {
-		if resource.Type != "drone_secret" {
+		if resource.Type != "drone_cron" {
 			continue
 		}
 
@@ -78,11 +72,11 @@ func testSecretDestroy(state *terraform.State) error {
 			return err
 		}
 
-		err = client.SecretDelete(owner, repo, resource.Primary.Attributes["name"])
+		err = client.CronDelete(owner, repo, resource.Primary.Attributes["name"])
 
 		if err == nil {
 			return fmt.Errorf(
-				"Secret still exists: %s/%s:%s",
+				"Cron job still exists: %s/%s:%s",
 				owner,
 				repo,
 				resource.Primary.Attributes["name"],

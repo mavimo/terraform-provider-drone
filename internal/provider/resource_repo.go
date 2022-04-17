@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	"github.com/mavimo/terraform-provider-drone/drone/utils"
+	"github.com/mavimo/terraform-provider-drone/internal/provider/utils"
 )
 
 func resourceRepo() *schema.Resource {

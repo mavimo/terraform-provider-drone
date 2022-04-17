@@ -7,7 +7,7 @@ import (
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	"github.com/mavimo/terraform-provider-drone/drone/utils"
+	"github.com/mavimo/terraform-provider-drone/internal/provider/utils"
 )
 
 func testRepoConfigBasic(user, repo string) string {
