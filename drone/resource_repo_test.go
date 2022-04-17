@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Lucretius/terraform-provider-drone/drone/utils"
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/mavimo/terraform-provider-drone/drone/utils"
 )
 
 func testRepoConfigBasic(user, repo string) string {

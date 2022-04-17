@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/Lucretius/terraform-provider-drone/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/mavimo/terraform-provider-drone/drone"
 )
 
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
