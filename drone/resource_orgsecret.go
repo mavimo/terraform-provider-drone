@@ -12,6 +12,7 @@ import (
 
 func resourceOrgSecret() *schema.Resource {
 	return &schema.Resource{
+		Description: "Manage a org secret.",
 		Schema: map[string]*schema.Schema{
 			"namespace": {
 				Type:        schema.TypeString,

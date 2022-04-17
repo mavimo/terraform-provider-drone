@@ -14,6 +14,7 @@ import (
 
 func resourceRepo() *schema.Resource {
 	return &schema.Resource{
+		Description: "Activate and configure a repository.",
 		Schema: map[string]*schema.Schema{
 			"repository": {
 				Type:        schema.TypeString,
