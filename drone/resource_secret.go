@@ -14,6 +14,7 @@ import (
 
 func resourceSecret() *schema.Resource {
 	return &schema.Resource{
+		Description: "Manage a repository secret.",
 		Schema: map[string]*schema.Schema{
 			"repository": {
 				Type:        schema.TypeString,
