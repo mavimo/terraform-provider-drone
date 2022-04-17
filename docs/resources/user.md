@@ -10,7 +10,7 @@ description: |-
 
 Manage a user.
 
-~> In order to use the _drone_user_ resource you must have admin privileges within your Drone environment.
+~> In order to use the `drone_user` resource you must have admin privileges within your Drone environment.
 
 ## Example Usage
 

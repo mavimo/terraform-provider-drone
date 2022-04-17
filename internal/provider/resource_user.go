@@ -12,9 +12,7 @@ import (
 
 func resourceUser() *schema.Resource {
 	return &schema.Resource{
-		Description: `Manage a user.
-
-		~> In order to use the _drone_user_ resource you must have admin privileges within your Drone environment.`,
+		Description: "Manage a user.",
 		Schema: map[string]*schema.Schema{
 			"login": {
 				Type:        schema.TypeString,
