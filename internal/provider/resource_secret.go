@@ -44,6 +44,11 @@ func resourceSecret() *schema.Resource {
 				ForceNew:    true,
 				Description: "Allow retrieving the secret on pull requests",
 			},
+			"id": {
+				Description: "The string representation of the secret.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 
 		Importer: &schema.ResourceImporter{

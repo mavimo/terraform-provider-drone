@@ -41,6 +41,11 @@ func resourceUser() *schema.Resource {
 				Computed:    true,
 				Description: "The user's access token",
 			},
+			"id": {
+				Description: "The string representation of the user.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 
 		Importer: &schema.ResourceImporter{

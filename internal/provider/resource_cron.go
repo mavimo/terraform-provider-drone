@@ -65,6 +65,11 @@ func resourceCron() *schema.Resource {
 					"@yearly",
 				}, false),
 			},
+			"id": {
+				Description: "The string representation of the cron.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 
 		Importer: &schema.ResourceImporter{

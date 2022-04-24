@@ -45,6 +45,11 @@ func resourceOrgSecret() *schema.Resource {
 				Optional:    true,
 				ForceNew:    false,
 			},
+			"id": {
+				Description: "The string representation of the organization secret.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 
 		Importer: &schema.ResourceImporter{

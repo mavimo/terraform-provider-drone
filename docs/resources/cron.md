@@ -35,6 +35,9 @@ resource "drone_cron" "cron_job" {
 - `branch` (String) The branch to run this cron job on. Defaults to `master`.
 - `disabled` (Boolean) Indicate if the cron should be disabled.
 - `expr` (String) The cron interval. Allowed values are `@daily`, `@weekly`, `@monthly`, and `@yearly`. Defaults to `@monthly`.
-- `id` (String) The ID of this resource.
+
+### Read-Only
+
+- `id` (String) The string representation of the cron.
 
 

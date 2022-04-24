@@ -33,6 +33,9 @@ resource "drone_orgsecret" "octocat" {
 
 - `allow_on_pull_request` (Boolean) Allow retrieving the secret on pull requests.
 - `allow_push_on_pull_request` (Boolean) Allow pushing on pull requests
-- `id` (String) The ID of this resource.
+
+### Read-Only
+
+- `id` (String) The string representation of the organization secret.
 
 

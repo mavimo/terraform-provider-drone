@@ -29,10 +29,13 @@ resource "drone_repo" "hello_world" {
 ### Optional
 
 - `configuration` (String) Drone Configuration file Defaults to `.drone.yml`.
-- `id` (String) The ID of this resource.
 - `protected` (Boolean) Repository is protected
 - `timeout` (Number) Build execution timeout in minutes Defaults to `60`.
 - `trusted` (Boolean) Repository is trusted
 - `visibility` (String) Repository visibility Defaults to `private`.
+
+### Read-Only
+
+- `id` (String) The string representation of the repository.
 
 

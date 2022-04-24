@@ -31,11 +31,11 @@ resource "drone_user" "octocat" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `machine` (Boolean) Is the user a machine? Defaults to `false`.
 
 ### Read-Only
 
+- `id` (String) The string representation of the user.
 - `token` (String) The user's access token
 
 
