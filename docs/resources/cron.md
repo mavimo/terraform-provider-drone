@@ -40,4 +40,10 @@ resource "drone_cron" "cron_job" {
 
 - `id` (String) The string representation of the cron.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import drone_repo.my_cron my-org/my-repo/cron-name
+```

@@ -73,7 +73,7 @@ func resourceCron() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
+			StateContext: resourceCronImport,
 		},
 
 		CreateContext: resourceCronCreate,
@@ -214,4 +214,22 @@ func readCron(data *schema.ResourceData, cron *drone.Cron, namespace string, rep
 	data.Set("name", cron.Name)
 
 	return diag.Diagnostics{}
+}
+
+func resourceCronImport(ctx context.Context, data *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	user, repo, name, err := utils.ParseId(data.Id(), data.Id())
+
+	if err != nil {
+		return []*schema.ResourceData{}, err
+	}
+
+	data.Set("repository", fmt.Sprintf("%s/%s", user, repo))
+	data.Set("name", name)
+
+	diag := resourceCronRead(ctx, data, meta)
+	if diag.HasError() {
+		return []*schema.ResourceData{}, fmt.Errorf("Unable to read the specified cron: %s", data.Id())
+	}
+
+	return []*schema.ResourceData{data}, nil
 }

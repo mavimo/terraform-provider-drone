@@ -38,4 +38,10 @@ resource "drone_repo" "hello_world" {
 
 - `id` (String) The string representation of the repository.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import drone_repo.my_repo my-org/my-repo
+```

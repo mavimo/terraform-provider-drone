@@ -38,4 +38,10 @@ resource "drone_orgsecret" "octocat" {
 
 - `id` (String) The string representation of the organization secret.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import drone_repo.org_secret myorg/my-secret-name
+```
