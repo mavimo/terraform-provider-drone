@@ -37,4 +37,10 @@ resource "drone_secret" "master_password" {
 
 - `id` (String) The string representation of the secret.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import drone_repo.my_secret my-org/my-repo/secret-name
+```
