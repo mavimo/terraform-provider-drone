@@ -32,6 +32,9 @@ resource "drone_secret" "master_password" {
 ### Optional
 
 - `allow_on_pull_request` (Boolean) Allow retrieving the secret on pull requests
-- `id` (String) The ID of this resource.
+
+### Read-Only
+
+- `id` (String) The string representation of the secret.
 
 

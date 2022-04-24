@@ -54,6 +54,11 @@ func resourceRepo() *schema.Resource {
 				Default:     ".drone.yml",
 				Description: "Drone Configuration file",
 			},
+			"id": {
+				Description: "The string representation of the repository.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 
 		Importer: &schema.ResourceImporter{
