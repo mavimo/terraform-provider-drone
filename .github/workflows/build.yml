@@ -57,7 +57,7 @@ jobs:
   # run acceptance tests in a matrix with Terraform core versions
   test:
     name: Matrix Test
-    needs: build
+    # needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -73,16 +73,11 @@ jobs:
           - '1.1.*'
     steps:
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
+    - name: Setup Go
+      uses: actions/setup-go@v2
       with:
         go-version: '1.17'
-      id: go
-
-    - uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: ${{ matrix.terraform }}
-        terraform_wrapper: false
+        check-latest: true
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
@@ -90,16 +85,43 @@ jobs:
     - name: Get dependencies
       run: |
         go mod download
-        
-    - name: TF acceptance tests
+
+    - name: Setup Terraform ${{ matrix.terraform }}
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ matrix.terraform }}
+        terraform_wrapper: false
+
+    - name: Start the acceptance test stack
+      run: docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" up -d
+
+    - name: Wait for healty services
+      run: |
+        sleep 60
+        # FIXME
+        # curl -s --retry 20 --retry-delay 10 --connect-timeout 5 --max-time 10 --retry-connrefused http://localhost:8000/healthz
+        # curl -s --retry 20 --retry-delay 10 --connect-timeout 5 --max-time 10 --retry-connrefused http://localhost:3000/
+
+    - name: Import fake data
+      run: |
+        # Import Gitea data
+        docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec gitea-mysql mysql -uroot -pgitea gitea -e 'SOURCE /tmp/gitea-data.sql'
+        # Create repository
+        curl -k -X POST "http://terraform:terraform@localhost:3000/api/v1/user/repos" -H "content-type: application/json" --data '{"name":"hook-test"}'
+        # Import Drone data
+        docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec drone-mysql mysql -uroot -pdrone drone -e 'SOURCE /tmp/drone-data.sql'
+        # Force Drone to sync repositories
+        curl -XPOST -H 'Authorization: Bearer 5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL' http://@localhost:8000/api/user/repos
+
+    - name: Run acceptance test
       timeout-minutes: 10
       env:
         TF_ACC: "1"
+        DRONE_SERVER: http://localhost:8000/
+        DRONE_TOKEN: 5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL
+        DRONE_USER: terraform
+      run: make testacc
 
-        # Set whatever additional acceptance test env vars here. You can
-        # optionally use data from your repository secrets using the
-        # following syntax:
-        # SOME_VAR: ${{ secrets.SOME_VAR }}
-
-      run: |
-        go test -v -cover ./internal/provider/
+    - name: Stop the acceptance test stack
+      if: always()
+      run: docker-compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" down

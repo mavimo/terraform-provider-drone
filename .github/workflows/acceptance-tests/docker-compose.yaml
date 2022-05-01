@@ -1,0 +1,79 @@
+version: "3.7"
+
+services:
+  gitea-mysql:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: 'gitea'
+      MYSQL_USER: 'gitea'
+      MYSQL_PASSWORD: 'gitea'
+      MYSQL_ROOT_PASSWORD: 'gitea'
+    volumes:
+      - ./gitea-data.sql:/tmp/gitea-data.sql
+
+  drone-mysql:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: 'drone'
+      MYSQL_USER: 'drone'
+      MYSQL_PASSWORD: 'drone'
+      MYSQL_ROOT_PASSWORD: 'drone'
+    volumes:
+      - ./drone-data.sql:/tmp/drone-data.sql
+
+  gitea-server:
+    image: gitea/gitea:latest-rootless
+    environment:
+      - APP_NAME=Gitea
+      - USER_UID=1000
+      - USER_GID=1000
+      - ROOT_URL=https://localhost:3000
+      - SSH_DOMAIN=localhost
+      - SSH_PORT=2222
+      - HTTP_PORT=3000
+      - DB_TYPE=mysql
+      - DB_HOST=gitea-mysql:3306
+      - DB_NAME=gitea
+      - DB_USER=gitea
+      - DB_PASSWD=gitea
+      - GITEA__server__ROOT_URL=http://localhost:3000/
+      - GITEA__server__DOMAIN=localhost
+      - GITEA__server__LFS_JWT_SECRET=nMpXkXvK2xVww2xzpyeNp2d-P_30yFtGvlOVa6a6ilY
+      - GITEA__server__OFFLINE_MODE=false
+      - GITEA__database__SSL_MODE=disable
+      - GITEA__database__CHARSET=utf8mb4
+      - GITEA__database__LOG_SQL=false
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__security__INTERNAL_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2NTEzMzk1MTF9.4H0EabdX7LHuSJma3RIXaR2MBThhyVNQKSfs98Knwoc
+      - GITEA__security__PASSWORD_HASH_ALGO=pbkdf2
+    ports:
+      - 2222:2222
+      - 3000:3000
+    restart: unless-stopped
+    volumes:
+      - ./gitea-pem.pem:/var/lib/gitea/jwt/private.pem
+
+  drone-server:
+    image: drone/drone:2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_DEBUG=true
+      - DRONE_ADMIN=terraform
+      - DRONE_USER_CREATE=username:terraform,admin:true
+      - DRONE_SERVER_PORT=:8000
+      - DRONE_DATABASE_DRIVER=mysql
+      - DRONE_DATABASE_DATASOURCE=root:drone@tcp(drone-mysql:3306)/drone?parseTime=true
+      - DRONE_GIT_ALWAYS_AUTH=false
+      - DRONE_GITEA_SERVER=http://gitea-server:3000
+      - DRONE_GITEA_CLIENT_ID=9819efc6-6716-4568-90bc-4f28757f6721
+      - DRONE_GITEA_CLIENT_SECRET=eqC55t6yDqBx4Vydppe9ofKbiur9jKpBd7puGNy7ugbm
+      - DRONE_RPC_SECRET=9c3921e3e748aff725d2e16ef31fbc42
+      - DRONE_SERVER_HOST=localhost:8000
+      - DRONE_HOST=http://localhost:8000
+      - DRONE_SERVER_PROTO=http
+      - DRONE_TLS_AUTOCERT=false
+      - DRONE_AGENTS_ENABLED=false
+    ports:
+      - 8000:8000
+    restart: unless-stopped
