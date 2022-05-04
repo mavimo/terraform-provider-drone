@@ -111,7 +111,7 @@ jobs:
         # Import Drone data
         docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec drone-mysql mysql -uroot -pdrone drone -e 'SOURCE /tmp/drone-data.sql'
         # Force Drone to sync repositories
-        curl -XPOST -H 'Authorization: Bearer 5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL' http://@localhost:8000/api/user/repos
+        curl -XPOST -H 'Authorization: Bearer 5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL' http://localhost:8000/api/user/repos
 
     - name: Run acceptance test
       timeout-minutes: 10
