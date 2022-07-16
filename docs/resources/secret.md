@@ -42,5 +42,5 @@ resource "drone_secret" "master_password" {
 Import is supported using the following syntax:
 
 ```shell
-terraform import drone_repo.my_secret my-org/my-repo/secret-name
+terraform import drone_secret.my_secret my-org/my-repo/secret-name
 ```

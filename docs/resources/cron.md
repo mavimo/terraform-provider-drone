@@ -45,5 +45,5 @@ resource "drone_cron" "cron_job" {
 Import is supported using the following syntax:
 
 ```shell
-terraform import drone_repo.my_cron my-org/my-repo/cron-name
+terraform import drone_cron.my_cron my-org/my-repo/cron-name
 ```
