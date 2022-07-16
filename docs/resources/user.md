@@ -38,4 +38,8 @@ resource "drone_user" "octocat" {
 - `id` (String) The string representation of the user.
 - `token` (String) The user's access token
 
+## Import
 
+Import is supported using the following syntax:
+
+{{codefile "shell" "examples/resources/drone_user/import.sh"}}
