@@ -43,7 +43,7 @@ docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec 
 curl -XPOST -H 'Authorization: Bearer 5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL' http://localhost:8000/api/user/repos
 ```
 
-To have a fully functional instance of drone (running on http://localhost:8000) connected to a gitea (running on http://localhost:3000) instance.
+To have a fully functional instance of drone (running on http://localhost:8000) connected to a gitea (hostname: `http://localhost:3000`, username: `terraform`, password: `terraform`) instance.
 
 Than you can use the [drone cli](https://github.com/harness/drone-cli) using the token `5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL` like:
 ```
