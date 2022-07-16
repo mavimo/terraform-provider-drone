@@ -1,1 +1,1 @@
-terraform import drone_repo.my_user username
+terraform import drone_user.my_user username

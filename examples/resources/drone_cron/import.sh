@@ -1,1 +1,1 @@
-terraform import drone_repo.my_cron my-org/my-repo/cron-name
+terraform import drone_cron.my_cron my-org/my-repo/cron-name

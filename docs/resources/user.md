@@ -42,4 +42,6 @@ resource "drone_user" "octocat" {
 
 Import is supported using the following syntax:
 
-{{codefile "shell" "examples/resources/drone_user/import.sh"}}
+```shell
+terraform import drone_user.my_user username
+```
