@@ -52,6 +52,31 @@ func TestRepo(t *testing.T) {
 						"trusted",
 						"false",
 					),
+					resource.TestCheckResourceAttr(
+						"drone_repo.repo",
+						"cancel_pulls",
+						"false",
+					),
+					resource.TestCheckResourceAttr(
+						"drone_repo.repo",
+						"cancel_push",
+						"false",
+					),
+					resource.TestCheckResourceAttr(
+						"drone_repo.repo",
+						"cancel_running",
+						"false",
+					),
+					resource.TestCheckResourceAttr(
+						"drone_repo.repo",
+						"ignore_forks",
+						"false",
+					),
+					resource.TestCheckResourceAttr(
+						"drone_repo.repo",
+						"ignore_pulls",
+						"false",
+					),
 				),
 			},
 		},

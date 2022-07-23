@@ -28,7 +28,12 @@ resource "drone_repo" "hello_world" {
 
 ### Optional
 
+- `cancel_pulls` (Boolean) Automatically cancel pending pull request builds
+- `cancel_push` (Boolean) Automatically cancel pending push builds
+- `cancel_running` (Boolean) Automatically cancel running builds if newer commit pushed
 - `configuration` (String) Drone Configuration file Defaults to `.drone.yml`.
+- `ignore_forks` (Boolean) Disable build for pull requests
+- `ignore_pulls` (Boolean) Disable build for forks
 - `protected` (Boolean) Repository is protected
 - `timeout` (Number) Build execution timeout in minutes Defaults to `60`.
 - `trusted` (Boolean) Repository is trusted
