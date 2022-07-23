@@ -16,6 +16,23 @@ func resourceSecret() *schema.Resource {
 	return &schema.Resource{
 		Description: "Manage a repository secret.",
 		Schema: map[string]*schema.Schema{
+			"allow_on_pull_request": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Allow retrieving the secret on pull requests",
+			},
+			"allow_push_on_pull_request": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Allow retrieving the secret for push on pull requests",
+			},
+			"name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Secret name",
+			},
 			"repository": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -26,23 +43,11 @@ func resourceSecret() *schema.Resource {
 					"Invalid repository (e.g. octocat/hello-world)",
 				),
 			},
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "Secret name",
-			},
 			"value": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Sensitive:   true,
 				Description: "Secret value",
-			},
-			"allow_on_pull_request": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				ForceNew:    true,
-				Description: "Allow retrieving the secret on pull requests",
 			},
 			"id": {
 				Description: "The string representation of the secret.",
@@ -151,9 +156,10 @@ func resourceSecretExists(data *schema.ResourceData, meta interface{}) (bool, er
 
 func createSecret(data *schema.ResourceData) (secret *drone.Secret) {
 	secret = &drone.Secret{
-		Name:        data.Get("name").(string),
-		Data:        data.Get("value").(string),
-		PullRequest: data.Get("allow_on_pull_request").(bool),
+		Name:            data.Get("name").(string),
+		Data:            data.Get("value").(string),
+		PullRequest:     data.Get("allow_on_pull_request").(bool),
+		PullRequestPush: data.Get("allow_push_on_pull_request").(bool),
 	}
 
 	return
@@ -169,6 +175,7 @@ func readSecret(ctx context.Context, data *schema.ResourceData, owner, repo stri
 	data.Set("repository", fmt.Sprintf("%s/%s", owner, repo))
 	data.Set("name", secret.Name)
 	data.Set("allow_on_pull_request", secret.PullRequest)
+	data.Set("allow_push_on_pull_request", secret.PullRequestPush)
 
 	return diag.Diagnostics{}
 }

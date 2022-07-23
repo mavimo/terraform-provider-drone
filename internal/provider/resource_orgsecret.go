@@ -41,7 +41,7 @@ func resourceOrgSecret() *schema.Resource {
 			},
 			"allow_push_on_pull_request": {
 				Type:        schema.TypeBool,
-				Description: "Allow pushing on pull requests",
+				Description: "Allow retrieving the secret for push on pull requests",
 				Optional:    true,
 				ForceNew:    false,
 			},
