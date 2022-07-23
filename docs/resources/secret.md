@@ -32,6 +32,7 @@ resource "drone_secret" "master_password" {
 ### Optional
 
 - `allow_on_pull_request` (Boolean) Allow retrieving the secret on pull requests
+- `allow_push_on_pull_request` (Boolean) Allow retrieving the secret for push on pull requests
 
 ### Read-Only
 

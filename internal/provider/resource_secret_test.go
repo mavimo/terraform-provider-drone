@@ -58,6 +58,16 @@ func TestSecret(t *testing.T) {
 						"value",
 						"1234567890",
 					),
+					resource.TestCheckResourceAttr(
+						"drone_secret.secret",
+						"allow_on_pull_request",
+						"false",
+					),
+					resource.TestCheckResourceAttr(
+						"drone_secret.secret",
+						"allow_push_on_pull_request",
+						"false",
+					),
 				),
 			},
 		},
