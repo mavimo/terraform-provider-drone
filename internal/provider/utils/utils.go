@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"crypto/md5"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -51,6 +53,17 @@ func ParseOrgId(str, example string) (organization, id string, err error) {
 	id = strings.Join(parts[1:], "/")
 
 	return
+}
+
+func BuildChecksumID(v []string) string {
+	sort.Strings(v)
+
+	h := md5.New()
+	// Hash.Write never returns an error. See https://pkg.go.dev/hash#Hash
+	_, _ = h.Write([]byte(strings.Join(v, "")))
+	bs := h.Sum(nil)
+
+	return fmt.Sprintf("%x", bs)
 }
 
 func Bool(val bool) *bool {
