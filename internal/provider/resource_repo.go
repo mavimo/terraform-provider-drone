@@ -16,6 +16,37 @@ func resourceRepo() *schema.Resource {
 	return &schema.Resource{
 		Description: "Activate and configure a repository.",
 		Schema: map[string]*schema.Schema{
+			"cancel_pulls": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Automatically cancel pending pull request builds",
+			},
+			"cancel_push": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Automatically cancel pending push builds",
+			},
+			"cancel_running": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Automatically cancel running builds if newer commit pushed",
+			},
+			"configuration": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     ".drone.yml",
+				Description: "Drone Configuration file",
+			},
+			"ignore_forks": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Disable build for pull requests",
+			},
+			"ignore_pulls": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Disable build for forks",
+			},
 			"repository": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -25,11 +56,6 @@ func resourceRepo() *schema.Resource {
 					regexp.MustCompile("^[^/ ]+/[^/ ]+$"),
 					"Invalid repository (e.g. octocat/hello-world)",
 				),
-			},
-			"trusted": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Repository is trusted",
 			},
 			"protected": {
 				Type:        schema.TypeBool,
@@ -42,17 +68,16 @@ func resourceRepo() *schema.Resource {
 				Default:     60,
 				Description: "Build execution timeout in minutes",
 			},
+			"trusted": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Repository is trusted",
+			},
 			"visibility": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "private",
 				Description: "Repository visibility",
-			},
-			"configuration": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     ".drone.yml",
-				Description: "Drone Configuration file",
 			},
 			"id": {
 				Description: "The string representation of the repository.",
@@ -182,13 +207,23 @@ func createRepo(ctx context.Context, data *schema.ResourceData) (repository *dro
 	timeout := int64(data.Get("timeout").(int))
 	visibility := data.Get("visibility").(string)
 	config := data.Get("configuration").(string)
+	cancelPulls := data.Get("cancel_pulls").(bool)
+	cancelPush := data.Get("cancel_push").(bool)
+	cancelRunning := data.Get("cancel_running").(bool)
+	ignoreForks := data.Get("ignore_forks").(bool)
+	ignorePulls := data.Get("ignore_pulls").(bool)
 
 	repository = &drone.RepoPatch{
-		Config:     &config,
-		Protected:  &protected,
-		Trusted:    &trusted,
-		Timeout:    &timeout,
-		Visibility: &visibility,
+		Config:        &config,
+		Protected:     &protected,
+		Trusted:       &trusted,
+		Timeout:       &timeout,
+		Visibility:    &visibility,
+		IgnoreForks:   &ignoreForks,
+		IgnorePulls:   &ignorePulls,
+		CancelPulls:   &cancelPulls,
+		CancelPush:    &cancelPush,
+		CancelRunning: &cancelRunning,
 	}
 
 	return repository
@@ -207,6 +242,11 @@ func readRepo(ctx context.Context, data *schema.ResourceData, repository *drone.
 	data.Set("timeout", repository.Timeout)
 	data.Set("visibility", repository.Visibility)
 	data.Set("configuration", repository.Config)
+	data.Set("cancel_pulls", repository.CancelPulls)
+	data.Set("cancel_push", repository.CancelPush)
+	data.Set("cancel_running", repository.CancelRunning)
+	data.Set("ignore_forks", repository.IgnoreForks)
+	data.Set("ignore_pulls", repository.IgnorePulls)
 
 	return diag.Diagnostics{}
 }
