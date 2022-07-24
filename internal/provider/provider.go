@@ -52,6 +52,15 @@ func Provider() *schema.Provider {
 			"drone_cron":      resourceCron(),
 			"drone_template":  resourceTemplate(),
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"drone_repo":      dataSourceRepo(),
+			"drone_repos":     dataSourceRepos(),
+			"drone_template":  dataSourceTemplate(),
+			"drone_templates": dataSourceTemplates(),
+			"drone_user":      dataSourceUser(),
+			"drone_users":     dataSourceUsers(),
+			"drone_user_self": dataSourceUserSelf(),
+		},
 		ConfigureContextFunc: providerConfigureFunc,
 	}
 }
