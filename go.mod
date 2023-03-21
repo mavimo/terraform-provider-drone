@@ -1,6 +1,6 @@
 module github.com/mavimo/terraform-provider-drone
 
-go 1.19
+go 1.20
 
 require (
 	github.com/drone/drone-go v1.7.1
