@@ -25,5 +25,3 @@ data "drone_users" "all" {
 
 - `id` (String) The ID of this resource.
 - `logins` (List of String) List with the login name for all the active users in the Drone instance
-
-

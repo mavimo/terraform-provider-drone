@@ -25,5 +25,3 @@ data "drone_repos" "all" {
 
 - `id` (String) The ID of this resource.
 - `repositories` (List of String) List of names from repositories enabled in Drone
-
-
