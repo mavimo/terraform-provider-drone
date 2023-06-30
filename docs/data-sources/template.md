@@ -32,5 +32,3 @@ data "drone_template" "octocat" {
 
 - `data` (String) Template content
 - `id` (String) The ID of this resource.
-
-

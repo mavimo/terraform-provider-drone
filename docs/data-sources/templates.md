@@ -30,5 +30,3 @@ data "drone_templates" "all" {
 
 - `id` (String) The ID of this resource.
 - `names` (List of String)
-
-

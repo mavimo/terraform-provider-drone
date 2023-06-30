@@ -39,5 +39,3 @@ data "drone_repo" "hello_world" {
 - `timeout` (Number) Build execution timeout in minutes
 - `trusted` (Boolean) Repository is trusted
 - `visibility` (String) Repository visibility
-
-

@@ -33,5 +33,3 @@ data "drone_user" "octocat" {
 - `email` (String)
 - `id` (String) The ID of this resource.
 - `machine` (Boolean) Is the user a machine?
-
-

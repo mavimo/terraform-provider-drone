@@ -29,5 +29,3 @@ data "drone_user_self" "me" {
 - `id` (String) The ID of this resource.
 - `login` (String) Login name
 - `machine` (Boolean) Is the user a machine?
-
-
