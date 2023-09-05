@@ -31,7 +31,7 @@ jobs:
       id: go
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Get dependencies
       run: |
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: '1.21'
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: go generate ./...
       - name: git diff
         run: |
@@ -84,7 +84,7 @@ jobs:
         check-latest: true
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Get dependencies
       run: |
