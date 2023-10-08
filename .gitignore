@@ -1,6 +1,7 @@
 *.dll
 *.exe
 .DS_Store
+coverage.out
 example.tf
 terraform.tfplan
 terraform.tfstate
