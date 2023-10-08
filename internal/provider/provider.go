@@ -75,7 +75,7 @@ func providerConfigureFunc(ctx context.Context, data *schema.ResourceData) (inte
 	}
 
 	auther := config.Client(
-		oauth2.NoContext,
+		context.Background(),
 		&oauth2.Token{
 			AccessToken: data.Get("token").(string),
 		},
