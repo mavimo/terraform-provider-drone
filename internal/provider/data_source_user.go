@@ -56,7 +56,7 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("Failed to read Drone user with id: %s", d.Id()),
+			Summary:  fmt.Sprintf("Failed to read Drone user with id: %s", login),
 			Detail:   err.Error(),
 		})
 

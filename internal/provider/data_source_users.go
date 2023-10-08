@@ -54,7 +54,6 @@ func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	sort.Strings(logins)
 	d.Set("logins", logins)
-
 	d.SetId(utils.BuildChecksumID(id))
 
 	return diags

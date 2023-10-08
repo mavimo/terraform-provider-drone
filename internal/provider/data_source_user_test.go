@@ -102,8 +102,10 @@ func TestAccDroneUserDataSource(t *testing.T) {
 			Providers: testProviders,
 			Steps: []resource.TestStep{
 				{
-					Config:      configData,
-					ExpectError: regexp.MustCompile("client error 404"), // TODO: find a better error to catch messages
+					Config: configData,
+					ExpectError: regexp.MustCompile(
+						fmt.Sprintf("Error: Failed to read Drone user with id: %s", testMissingUserName),
+					),
 				},
 			},
 		})
