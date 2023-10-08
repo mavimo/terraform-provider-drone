@@ -102,3 +102,34 @@ func TestParseId(t *testing.T) {
 		})
 	}
 }
+
+func TestBuildChecksumID(t *testing.T) {
+	for _, test := range []struct {
+		name         string
+		values       []string
+		expectedHash string
+	}{
+		{
+			name:         "Single string",
+			values:       []string{"aaaaa"},
+			expectedHash: "594f803b380a41396ed63dca39503542",
+		},
+		{
+			name:         "Two string",
+			values:       []string{"aaaaa", "bbbbb"},
+			expectedHash: "2d4105bcfdd281b5ba538ffefe519a7e",
+		},
+		{
+			name:         "Different order should hot change the hash string",
+			values:       []string{"bbbbb", "aaaaa"},
+			expectedHash: "2d4105bcfdd281b5ba538ffefe519a7e",
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			computedHash := BuildChecksumID(test.values)
+			if computedHash != test.expectedHash {
+				t.Errorf("we expect a different hash, we got: %v expected: %v", computedHash, test.expectedHash)
+			}
+		})
+	}
+}

@@ -7,7 +7,6 @@ import (
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/mavimo/terraform-provider-drone/internal/provider/utils"
 )
 
 func resourceUser() *schema.Resource {
@@ -136,11 +135,16 @@ func createUser(data *schema.ResourceData) (user *drone.User) {
 }
 
 func updateUser(data *schema.ResourceData) (user *drone.UserPatch) {
+	active := data.Get("active").(bool)
+	admin := data.Get("admin").(bool)
+	machine := data.Get("machine").(bool)
+
 	userPatch := &drone.UserPatch{
-		Active:  utils.Bool(data.Get("active").(bool)),
-		Admin:   utils.Bool(data.Get("admin").(bool)),
-		Machine: utils.Bool(data.Get("machine").(bool)),
+		Active:  &active,
+		Admin:   &admin,
+		Machine: &machine,
 	}
+
 	return userPatch
 }
 

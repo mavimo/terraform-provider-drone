@@ -193,7 +193,7 @@ func updateCron(data *schema.ResourceData) (repository *drone.CronPatch) {
 	event := data.Get("event").(string)
 
 	cron := &drone.CronPatch{
-		Disabled: utils.Bool(disabled),
+		Disabled: &disabled,
 		Branch:   &branch,
 		Event:    &event,
 	}
