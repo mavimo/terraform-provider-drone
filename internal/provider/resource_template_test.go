@@ -63,7 +63,6 @@ func testTemplateConfigBasic(namespace, name, data string) string {
 }
 
 func testTemplateDestroy(state *terraform.State) error {
-	return nil
 	client := testProvider.Meta().(drone.Client)
 
 	for _, resource := range state.RootModule().Resources {

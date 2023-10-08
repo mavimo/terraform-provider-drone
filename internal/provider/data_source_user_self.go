@@ -52,7 +52,7 @@ func dataSourceUserSelfRead(ctx context.Context, d *schema.ResourceData, m inter
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("Failed to read currently authenticated Drone user"),
+			Summary:  "Failed to read currently authenticated Drone user",
 			Detail:   err.Error(),
 		})
 

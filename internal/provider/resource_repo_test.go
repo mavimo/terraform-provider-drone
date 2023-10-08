@@ -97,13 +97,13 @@ func testRepoDestroy(state *terraform.State) error {
 			return err
 		}
 
-		repositories, err := client.RepoList()
+		repositories, _ := client.RepoList()
 
 		for _, repository := range repositories {
 			if (repository.Namespace == owner) && (repository.Name == repo) {
 				err = client.RepoDisable(owner, repo)
 				if err != nil {
-					return fmt.Errorf("Repo still exists: %s/%s", owner, repo)
+					return fmt.Errorf("repo still exists: %s/%s", owner, repo)
 				}
 			}
 		}

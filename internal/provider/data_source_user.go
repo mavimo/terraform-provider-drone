@@ -69,7 +69,7 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 	d.Set("login", user.Login)
 	d.Set("machine", user.Machine)
 
-	d.SetId(fmt.Sprintf(login))
+	d.SetId(login)
 
 	return diags
 }

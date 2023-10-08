@@ -228,7 +228,7 @@ func resourceCronImport(ctx context.Context, data *schema.ResourceData, meta int
 
 	diag := resourceCronRead(ctx, data, meta)
 	if diag.HasError() {
-		return []*schema.ResourceData{}, fmt.Errorf("Unable to read the specified cron: %s", data.Id())
+		return []*schema.ResourceData{}, fmt.Errorf("unable to read the specified cron: %s", data.Id())
 	}
 
 	return []*schema.ResourceData{data}, nil
