@@ -9,13 +9,19 @@ docker compose -f .github/workflows/acceptance-tests/docker-compose.yaml up -d
 
 than, once all the containers are up & running, execute:
 ```bash
+# Import Gitea data
 docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec gitea-mysql mysql -uroot -pgitea gitea -e 'SOURCE /tmp/gitea-data.sql'
+# Create repository
 curl -k -X POST "http://terraform:terraform@localhost:3000/api/v1/user/repos" -H "content-type: application/json" --data '{"name":"repo-test-1"}'
 curl -k -X POST "http://terraform:terraform@localhost:3000/api/v1/user/repos" -H "content-type: application/json" --data '{"name":"repo-test-2"}'
 curl -k -X POST "http://terraform:terraform@localhost:3000/api/v1/user/repos" -H "content-type: application/json" --data '{"name":"repo-test-3"}'
+# Import Drone data
 docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec drone-mysql mysql -uroot -pdrone drone -e 'SOURCE /tmp/drone-data.sql'
+# Force Drone to sync repositories
 curl -XPOST -H 'Authorization: Bearer 5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL' http://localhost:8000/api/user/repos
 ```
+
+You can also use `make create-env` and `make load-fixtures` command as shortcut.
 
 You can access to Drone via `http://localhost:8000` and Gitea (hostname: `http://localhost:3000`, username: `terraform`, password: `terraform`) instance.
 

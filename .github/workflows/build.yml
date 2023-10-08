@@ -106,7 +106,7 @@ jobs:
         terraform_wrapper: false
 
     - name: Start the acceptance test stack
-      run: docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" up -d
+      run: make create-env
 
     - name: Wait for healty services
       run: |
@@ -116,17 +116,7 @@ jobs:
         # curl -s --retry 20 --retry-delay 10 --connect-timeout 5 --max-time 10 --retry-connrefused http://localhost:3000/
 
     - name: Import fake data
-      run: |
-        # Import Gitea data
-        docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec gitea-mysql mysql -uroot -pgitea gitea -e 'SOURCE /tmp/gitea-data.sql'
-        # Create repository
-        curl -k -X POST "http://terraform:terraform@localhost:3000/api/v1/user/repos" -H "content-type: application/json" --data '{"name":"repo-test-1"}'
-        curl -k -X POST "http://terraform:terraform@localhost:3000/api/v1/user/repos" -H "content-type: application/json" --data '{"name":"repo-test-2"}'
-        curl -k -X POST "http://terraform:terraform@localhost:3000/api/v1/user/repos" -H "content-type: application/json" --data '{"name":"repo-test-3"}'
-        # Import Drone data
-        docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" exec drone-mysql mysql -uroot -pdrone drone -e 'SOURCE /tmp/drone-data.sql'
-        # Force Drone to sync repositories
-        curl -XPOST -H 'Authorization: Bearer 5PVYqFHjdYWpzyOk6PVj9OUQULibBJeL' http://localhost:8000/api/user/repos
+      run: make load-fixtures
 
     - name: Run acceptance test
       timeout-minutes: 10
