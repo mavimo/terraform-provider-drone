@@ -10,7 +10,7 @@ import (
 
 func TestAccDroneRepoDataSource(t *testing.T) {
 	testOrg := "terraform"
-	testRepoName := "hook-test"
+	testRepoName := "repo-test-1"
 
 	t.Run("check drone_repo data source with default values", func(t *testing.T) {
 		configResource := fmt.Sprintf(`

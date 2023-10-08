@@ -30,6 +30,7 @@ func testCronConfigBasic(user, repo, name string) string {
 }
 
 func TestCron(t *testing.T) {
+	repoName := "repo-test-1"
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testProviders,
@@ -38,14 +39,14 @@ func TestCron(t *testing.T) {
 			{
 				Config: testCronConfigBasic(
 					testDroneUser,
-					"hook-test",
+					repoName,
 					"cron_job",
 				),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"drone_cron.cron",
 						"repository",
-						fmt.Sprintf("%s/hook-test", testDroneUser),
+						fmt.Sprintf("%s/%s", testDroneUser, repoName),
 					),
 					resource.TestCheckResourceAttr(
 						"drone_cron.cron",
