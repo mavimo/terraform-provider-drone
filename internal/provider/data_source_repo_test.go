@@ -2,27 +2,28 @@ package drone
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccDroneRepoDataSource(t *testing.T) {
-	testDroneUser := "terraform"
-	repoName := "hook-test"
+	testOrg := "terraform"
+	testRepoName := "hook-test"
 
 	t.Run("check drone_repo data source with default values", func(t *testing.T) {
 		configResource := fmt.Sprintf(`
 			resource "drone_repo" "repo" {
 				repository = "%s/%s"
 			}
-		`, testDroneUser, repoName)
+		`, testOrg, testRepoName)
 
 		configData := configResource + fmt.Sprintf(`
 			data "drone_repo" "test" {
 				repository = "%s/%s"
 			}
-		`, testDroneUser, repoName)
+		`, testOrg, testRepoName)
 
 		resource.Test(t, resource.TestCase{
 			Providers: testProviders,
@@ -41,7 +42,7 @@ func TestAccDroneRepoDataSource(t *testing.T) {
 						resource.TestCheckResourceAttr("data.drone_repo.test", "ignore_forks", "false"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "ignore_pulls", "false"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "protected", "false"),
-						resource.TestCheckResourceAttr("data.drone_repo.test", "repository", fmt.Sprintf("%s/%s", testDroneUser, repoName)),
+						resource.TestCheckResourceAttr("data.drone_repo.test", "repository", fmt.Sprintf("%s/%s", testOrg, testRepoName)),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "timeout", "60"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "trusted", "false"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "visibility", "private"),
@@ -65,13 +66,13 @@ func TestAccDroneRepoDataSource(t *testing.T) {
 				timeout        = 120
 				trusted        = true
 			}
-		`, testDroneUser, repoName)
+		`, testOrg, testRepoName)
 
 		configData := configResource + fmt.Sprintf(`
 			data "drone_repo" "test" {
 				repository = "%s/%s"
 			}
-		`, testDroneUser, repoName)
+		`, testOrg, testRepoName)
 
 		resource.Test(t, resource.TestCase{
 			Providers: testProviders,
@@ -90,11 +91,31 @@ func TestAccDroneRepoDataSource(t *testing.T) {
 						resource.TestCheckResourceAttr("data.drone_repo.test", "ignore_forks", "true"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "ignore_pulls", "true"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "protected", "true"),
-						resource.TestCheckResourceAttr("data.drone_repo.test", "repository", fmt.Sprintf("%s/%s", testDroneUser, repoName)),
+						resource.TestCheckResourceAttr("data.drone_repo.test", "repository", fmt.Sprintf("%s/%s", testOrg, testRepoName)),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "timeout", "120"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "trusted", "true"),
 						resource.TestCheckResourceAttr("data.drone_repo.test", "visibility", "private"),
 					),
+				},
+			},
+		})
+	})
+
+	t.Run("check drone_repo data source for non existing repositories", func(t *testing.T) {
+		testMissingRepoName := "missing"
+
+		configData := fmt.Sprintf(`
+			data "drone_repo" "test" {
+				repository = "%s/%s"
+			}
+		`, testOrg, testMissingRepoName)
+
+		resource.Test(t, resource.TestCase{
+			Providers: testProviders,
+			Steps: []resource.TestStep{
+				{
+					Config:      configData,
+					ExpectError: regexp.MustCompile(fmt.Sprintf("Failed to read repo %s/%s", testOrg, testMissingRepoName)),
 				},
 			},
 		})
