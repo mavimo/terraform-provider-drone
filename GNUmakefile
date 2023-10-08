@@ -29,4 +29,4 @@ test:
 
 # Run acceptance tests
 testacc:
-	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
+	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -coverprofile=coverage.out -race -covermode=atomic
