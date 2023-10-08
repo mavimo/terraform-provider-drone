@@ -19,18 +19,20 @@ func testRepoConfigBasic(user, repo string) string {
 }
 
 func TestRepo(t *testing.T) {
+	repoName := "repo-test-1"
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testProviders,
 		CheckDestroy: testRepoDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testRepoConfigBasic(testDroneUser, "hook-test"),
+				Config: testRepoConfigBasic(testDroneUser, repoName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"drone_repo.repo",
 						"repository",
-						fmt.Sprintf("%s/hook-test", testDroneUser),
+						fmt.Sprintf("%s/%s", testDroneUser, repoName),
 					),
 					resource.TestCheckResourceAttr(
 						"drone_repo.repo",

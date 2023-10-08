@@ -30,6 +30,8 @@ func testSecretConfigBasic(user, repo, name, value string) string {
 }
 
 func TestSecret(t *testing.T) {
+	repoName := "repo-test-1"
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testProviders,
@@ -38,7 +40,7 @@ func TestSecret(t *testing.T) {
 			{
 				Config: testSecretConfigBasic(
 					testDroneUser,
-					"hook-test",
+					repoName,
 					"password",
 					"1234567890",
 				),
@@ -46,7 +48,7 @@ func TestSecret(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"drone_secret.secret",
 						"repository",
-						fmt.Sprintf("%s/hook-test", testDroneUser),
+						fmt.Sprintf("%s/%s", testDroneUser, repoName),
 					),
 					resource.TestCheckResourceAttr(
 						"drone_secret.secret",
