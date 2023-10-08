@@ -65,11 +65,3 @@ func BuildChecksumID(v []string) string {
 
 	return fmt.Sprintf("%x", bs)
 }
-
-func Bool(val bool) *bool {
-	return &val
-}
-
-func String(val string) *string {
-	return &val
-}
