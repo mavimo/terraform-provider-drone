@@ -29,7 +29,7 @@ func testSecretConfigBasic(user, repo, name, value string) string {
 	)
 }
 
-func TestSecret(t *testing.T) {
+func TestAccDroneSecretResource(t *testing.T) {
 	repoName := "repo-test-1"
 
 	resource.Test(t, resource.TestCase{

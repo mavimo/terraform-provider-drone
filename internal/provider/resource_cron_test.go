@@ -10,49 +10,42 @@ import (
 	"github.com/mavimo/terraform-provider-drone/internal/provider/utils"
 )
 
-func testCronConfigBasic(user, repo, name string) string {
-	return fmt.Sprintf(`
-    resource "drone_repo" "repo" {
-      repository = "%s/%s"
-    }
+func TestAccDroneCronResource(t *testing.T) {
+	cronName := "cron_job"
+	orgName := "terraform"
+	repoName := "repo-test-1"
 
-    resource "drone_cron" "cron" {
-      repository = "${drone_repo.repo.repository}"
-      name       = "%s"
+	setupConfig := fmt.Sprintf(`
+		resource "drone_repo" "repo" {
+			repository = "%s/%s"
+		}
+	`, orgName, repoName)
+
+	createConfig := setupConfig + fmt.Sprintf(`
+		resource "drone_cron" "cron" {
+			repository = "${drone_repo.repo.repository}"
+			name       = "%s"
 			expr       = "@monthly"
 			event      = "push"
-    }
-    `,
-		user,
-		repo,
-		name,
-	)
-}
+		}
+	`, cronName)
 
-func TestCron(t *testing.T) {
-	repoName := "repo-test-1"
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testProviders,
 		CheckDestroy: testCronDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testCronConfigBasic(
-					testDroneUser,
-					repoName,
-					"cron_job",
-				),
+				Config: setupConfig,
+				Check:  resource.ComposeTestCheckFunc(),
+			},
+			{
+				Config: createConfig,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(
-						"drone_cron.cron",
-						"repository",
-						fmt.Sprintf("%s/%s", testDroneUser, repoName),
-					),
-					resource.TestCheckResourceAttr(
-						"drone_cron.cron",
-						"name",
-						"cron_job",
-					),
+					resource.TestCheckResourceAttr("drone_cron.cron", "repository", fmt.Sprintf("%s/%s", orgName, repoName)),
+					resource.TestCheckResourceAttr("drone_cron.cron", "name", cronName),
+					resource.TestCheckResourceAttr("drone_cron.cron", "branch", "master"),
+					resource.TestCheckResourceAttr("drone_cron.cron", "disabled", "false"),
 				),
 			},
 		},

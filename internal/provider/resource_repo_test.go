@@ -18,7 +18,7 @@ func testRepoConfigBasic(user, repo string) string {
     `, user, repo)
 }
 
-func TestRepo(t *testing.T) {
+func TestAccDroneRepoResource(t *testing.T) {
 	repoName := "repo-test-1"
 
 	resource.Test(t, resource.TestCase{
