@@ -54,6 +54,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"drone_cron":      dataSourceCron(),
+			"drone_crons":     dataSourceCrons(),
 			"drone_repo":      dataSourceRepo(),
 			"drone_repos":     dataSourceRepos(),
 			"drone_template":  dataSourceTemplate(),
