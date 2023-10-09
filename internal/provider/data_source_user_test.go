@@ -68,6 +68,7 @@ func TestAccDroneUserDataSource(t *testing.T) {
 		`, machineName)
 
 		resource.Test(t, resource.TestCase{
+			PreCheck:  func() { testAccPreCheck(t) },
 			Providers: testProviders,
 			Steps: []resource.TestStep{
 				{

@@ -26,6 +26,7 @@ func TestAccDroneRepoDataSource(t *testing.T) {
 		`, testOrg, testRepoName)
 
 		resource.Test(t, resource.TestCase{
+			PreCheck:  func() { testAccPreCheck(t) },
 			Providers: testProviders,
 			Steps: []resource.TestStep{
 				{

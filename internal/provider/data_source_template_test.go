@@ -29,6 +29,7 @@ func TestAccDroneTemplateDataSource(t *testing.T) {
 		`, testOrg, templateName)
 
 		resource.Test(t, resource.TestCase{
+			PreCheck:  func() { testAccPreCheck(t) },
 			Providers: testProviders,
 			Steps: []resource.TestStep{
 				{

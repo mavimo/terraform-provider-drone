@@ -18,7 +18,7 @@ resource "drone_user" "octocat" {
 }
 `
 
-func TestUser(t *testing.T) {
+func TestAccDroneUserResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testProviders,
