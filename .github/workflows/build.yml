@@ -100,7 +100,7 @@ jobs:
         go mod download
 
     - name: Setup Terraform ${{ matrix.terraform }}
-      uses: hashicorp/setup-terraform@v2
+      uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: ${{ matrix.terraform }}
         terraform_wrapper: false
