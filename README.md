@@ -1,5 +1,6 @@
 [![Tests](https://github.com/mavimo/terraform-provider-drone/actions/workflows/build.yml/badge.svg)](https://github.com/mavimo/terraform-provider-drone/actions/workflows/build.yml)
 [![CodeCov](https://codecov.io/gh/mavimo/terraform-provider-drone/graph/badge.svg?token=EL6QZ0STUB)](https://codecov.io/gh/mavimo/terraform-provider-drone)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmavimo%2Fterraform-provider-drone.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmavimo%2Fterraform-provider-drone?ref=badge_shield)
 
 # Drone Terraform Provider
 
@@ -30,6 +31,9 @@ go build
 ## Licence
 
 This project is licensed under the [MIT licence](http://dan.mit-license.org/).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmavimo%2Fterraform-provider-drone.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmavimo%2Fterraform-provider-drone?ref=badge_large)
 
 ## Meta
 
