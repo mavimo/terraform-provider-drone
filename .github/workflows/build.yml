@@ -30,6 +30,7 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.21'
+        check-latest: true
       id: go
 
     - name: Check out code into the Go module directory
@@ -50,6 +51,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.21'
+          check-latest: true
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
