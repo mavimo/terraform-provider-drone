@@ -14,7 +14,7 @@ build:
 
 .PHONY: release
 release:
-	goreleaser release --rm-dist --snapshot --skip-publish  --skip-sign
+	goreleaser release --clean --snapshot --skip=publish,sign
 
 .PHONY: docs
 docs:
