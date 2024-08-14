@@ -141,4 +141,4 @@ jobs:
 
     - name: Stop the acceptance test stack
       if: always()
-      run: docker-compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" down
+      run: docker compose -f ".github/workflows/acceptance-tests/docker-compose.yaml" down
