@@ -18,28 +18,33 @@ jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v4
-      -
-        name: Unshallow
+        id: checkout
+
+      - name: Unshallow
         run: git fetch --prune --unshallow
-      -
-        name: Set up Go
+
+      - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.23'
           check-latest: true
-      -
-        name: Import GPG key
+        id: go
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        id: terraform
+
+      - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           # These secrets will need to be configured for the repository:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-      -
-        name: Run GoReleaser
+
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
           version: '~> v2'
