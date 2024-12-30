@@ -25,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v4
+      id: checkout
 
     - name: Set up Go
       uses: actions/setup-go@v5
@@ -33,8 +36,9 @@ jobs:
         check-latest: true
       id: go
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v4
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      id: terraform
 
     - name: Get dependencies
       run: |
@@ -47,14 +51,20 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v4
+        id: checkout
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.23'
           check-latest: true
+        id: go
 
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        id: terraform
 
       - name: Use go to auto-generate code
         run: go generate ./...
@@ -90,19 +100,14 @@ jobs:
           - '1.8.*'
           - '1.9.*'
     steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v4
 
     - name: Setup Go
       uses: actions/setup-go@v5
       with:
         go-version: '1.23'
         check-latest: true
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v4
-
-    - name: Get dependencies
-      run: |
-        go mod download
 
     - name: Setup Terraform ${{ matrix.terraform }}
       uses: hashicorp/setup-terraform@v3
