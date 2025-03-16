@@ -24,7 +24,7 @@ func resourceTemplate() *schema.Resource {
 			},
 			"name": {
 				Type:             schema.TypeString,
-				Description:      "Template name",
+				Description:      "Template name, it should end with one of the supported extensions (`yaml`, `json`, `jsonnet` or `starlark`)",
 				Required:         true,
 				ForceNew:         true,
 				ValidateDiagFunc: resourceTemplateNameValidation,
