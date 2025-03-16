@@ -7,7 +7,7 @@ require (
 	github.com/drone/drone-go v1.7.1
 	github.com/hashicorp/go-cty v1.4.1
 	github.com/hashicorp/terraform-plugin-docs v0.21.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
 	golang.org/x/oauth2 v0.28.0
 )
 
