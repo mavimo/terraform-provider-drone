@@ -48,6 +48,30 @@ func TestAccDroneTemplateResource(t *testing.T) {
 					),
 				),
 			},
+			{
+				Config: testTemplateConfigBasic(
+					"foo",
+					"baz.starlark",
+					"lorem: ipsum",
+				),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"drone_template.template",
+						"namespace",
+						"foo",
+					),
+					resource.TestCheckResourceAttr(
+						"drone_template.template",
+						"name",
+						"baz.starlark",
+					),
+					resource.TestCheckResourceAttr(
+						"drone_template.template",
+						"data",
+						"lorem: ipsum",
+					),
+				),
+			},
 		},
 	})
 }

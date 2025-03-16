@@ -155,7 +155,8 @@ func resourceTemplateNameValidation(name interface{}, path cty.Path) diag.Diagno
 	case
 		".yaml",
 		".jsonnet",
-		".json":
+		".json",
+		".starlark":
 		return diag.Diagnostics{}
 	}
 	return diag.Errorf("Template name %s do not have a valid extension", name)
