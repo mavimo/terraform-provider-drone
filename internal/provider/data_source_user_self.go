@@ -2,7 +2,6 @@ package drone
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/drone/drone-go/drone"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -65,7 +64,7 @@ func dataSourceUserSelfRead(ctx context.Context, d *schema.ResourceData, m inter
 	d.Set("login", user.Login)
 	d.Set("machine", user.Machine)
 
-	d.SetId(fmt.Sprintf(user.Login))
+	d.SetId(user.Login)
 
 	return diags
 }
