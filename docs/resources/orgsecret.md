@@ -42,6 +42,8 @@ resource "drone_orgsecret" "octocat" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import drone_repo.org_secret myorg/my-secret-name
 ```
