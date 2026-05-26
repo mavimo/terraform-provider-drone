@@ -40,7 +40,7 @@ jobs:
       id: go
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v4
       id: terraform
 
     - name: Get dependencies
@@ -66,7 +66,7 @@ jobs:
         id: go
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         id: terraform
 
       - name: Use go to auto-generate code
@@ -118,7 +118,7 @@ jobs:
         check-latest: true
 
     - name: Setup Terraform ${{ matrix.terraform }}
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v4
       with:
         terraform_version: ${{ matrix.terraform }}
         terraform_wrapper: false
