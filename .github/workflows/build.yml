@@ -107,6 +107,7 @@ jobs:
           - '1.12.*'
           - '1.13.*'
           - '1.14.*'
+          - '1.15.*'
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v6
